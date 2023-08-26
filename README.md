@@ -7,7 +7,7 @@ jsonDB is a lightweight JSON-based database package for Node.js. It provides a s
 To install jsonDB, use the following command:
 
 ```bash
-npm install jsondb
+npm install jsonverse
 ```
 
 ## Usage
@@ -16,7 +16,7 @@ npm install jsondb
 // Import required modules and setup express router
 const express = require("express");
 const router = express.Router();
-const jsonDB = require("jsondb");
+const jsonVerse = require("jsonVerse");
 // Specify the data folder path
 const dataFolderPath = path.join(__dirname, "../Data");
 

@@ -1,8 +1,8 @@
 {
-  "name": "json-db",
+  "name": "jsonverse",
   "version": "1.0.0",
   "description": "jsonDB is a lightweight JSON-based database package for Node.js. It provides a simple interface to store, retrieve, and manage data using JSON files.",
-  "main": "jsonDB.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

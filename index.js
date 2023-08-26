@@ -1,10 +1,15 @@
 const fs = require("fs").promises;
 const path = require("path");
+const { randomUUID } = require("crypto");
 
-class jsonDB {
+class jsonVerse {
   constructor(dataFolderPath) {
     this.dataFolderPath = dataFolderPath;
   }
+
+  async randomID() {
+    return randomUUID();
+  }  
 
   getFilePath(dataName) {
     return path.join(this.dataFolderPath, `${dataName}.json`);
@@ -34,7 +39,7 @@ class jsonDB {
       console.error(`Error writing to file ${filePath}: ${error}`);
     }
   }
-  
+
   async writeDataById(id, newData) {
     const filePath = this.findDataById(id);
     try {
@@ -67,9 +72,16 @@ class jsonDB {
     }
   }
 
+  // Add Data
   async addData(dataName, newData) {
     const existingData = await this.readDataFromFile(dataName);
     if (existingData) {
+      // Generate a random and unique ID
+      const newId = await this.randomID();
+
+      // Add the ID to the newData object
+      newData.id = newId;
+
       existingData.push(newData);
       await this.writeDataByFileName(dataName, existingData);
     }
@@ -120,4 +132,4 @@ class jsonDB {
   }
 }
 
-module.exports = jsonDB;
+module.exports = jsonVerse;
