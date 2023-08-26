@@ -1,0 +1,19 @@
+{
+  "name": "json-db",
+  "version": "1.0.0",
+  "description": "jsonDB is a lightweight JSON-based database package for Node.js. It provides a simple interface to store, retrieve, and manage data using JSON files.",
+  "main": "jsonDB.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Marco5dev/jsonDB.git"
+  },
+  "author": "marco5dev",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Marco5dev/jsonDB/issues"
+  },
+  "homepage": "https://github.com/Marco5dev/jsonDB#readme"
+}
