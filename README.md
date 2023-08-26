@@ -1,10 +1,10 @@
-# jsonDB
+# jsonVerse
 
-jsonDB is a lightweight JSON-based database package for Node.js. It provides a simple interface to store, retrieve, and manage data using JSON files.
+jsonVerse is a lightweight JSON-based database package for Node.js. It provides a simple interface to store, retrieve, and manage data using JSON files.
 
 ## Installation
 
-To install jsonDB, use the following command:
+To install jsonVerse, use the following command:
 
 ```bash
 npm install jsonverse
@@ -21,7 +21,7 @@ const jsonVerse = require("jsonVerse");
 const dataFolderPath = path.join(__dirname, "../Data");
 
 // Initialize the JSONDatabase instance
-const db = new jsonDB(dataFolderPath);
+const db = new jsonVerse(dataFolderPath);
 ```
 ```javascript
 // Display all the website data

@@ -1,19 +1,19 @@
 {
   "name": "jsonverse",
   "version": "1.0.0",
-  "description": "jsonDB is a lightweight JSON-based database package for Node.js. It provides a simple interface to store, retrieve, and manage data using JSON files.",
+  "description": "jsonVerse is a lightweight JSON-based database package for Node.js. It provides a simple interface to store, retrieve, and manage data using JSON files.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Marco5dev/jsonDB.git"
+    "url": "git+https://github.com/Marco5dev/jsonVerse.git"
   },
   "author": "marco5dev",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Marco5dev/jsonDB/issues"
+    "url": "https://github.com/Marco5dev/jsonVerse/issues"
   },
-  "homepage": "https://github.com/Marco5dev/jsonDB#readme"
+  "homepage": "https://github.com/Marco5dev/jsonVerse#readme"
 }
