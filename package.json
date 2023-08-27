@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Marco5dev/jsonVerse.git"
+    "url": "https://github.com/Marco5dev/jsonverse"
   },
   "author": "marco5dev",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Marco5dev/jsonVerse/issues"
+    "url": "https://github.com/Marco5dev/jsonverse/issues"
   },
-  "homepage": "https://github.com/Marco5dev/jsonVerse#readme",
+  "homepage": "https://github.com/Marco5dev/jsonverse#readme",
   "dependencies": {
     "crypto": "^1.0.1"
   }
