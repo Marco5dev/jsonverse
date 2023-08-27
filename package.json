@@ -18,8 +18,5 @@
   "bugs": {
     "url": "https://github.com/Marco5dev/jsonverse/issues"
   },
-  "homepage": "https://github.com/Marco5dev/jsonverse#readme",
-  "dependencies": {
-    "crypto": "^1.0.1"
-  }
+  "homepage": "https://github.com/Marco5dev/jsonverse#readme"
 }
