@@ -24,7 +24,7 @@ jobs:
     - name: Publish to GitHub Packages
       run: |
         npm config set @GITHUB_USERNAME:registry https://npm.pkg.github.com
-        echo "//npm.pkg.github.com/:_authToken=\${{ secrets.NPM_TOKEN }}" > .npmrc
+        echo "//npm.pkg.github.com/:_authToken=\${{ secrets.NPM }}" > .npmrc
         npm publish
 
       env:
