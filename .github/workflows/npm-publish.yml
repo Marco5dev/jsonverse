@@ -40,8 +40,13 @@
 #       - name: Authenticate with GitHub Packages
 #         run: echo "//npm.pkg.github.com/:_authToken=${{secrets.NPM_TOKEN}}" >> .npmrc
 
+<<<<<<< HEAD
 #       - run: npm cache clean --force
 #       - run: npm ci
 
 #       - name: Publish to GitHub Packages
 #         run: npm publish
+=======
+      - name: Publish to GitHub Packages
+        run: npm publish
+>>>>>>> 56dd43ca5936ebfd2024cbc9216b8269591295fe
