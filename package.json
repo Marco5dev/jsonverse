@@ -4,7 +4,7 @@
   "description": "jsonVerse is a lightweight JSON-based database package for Node.js. It provides a simple interface to store, retrieve, and manage data using JSON files.",
   "main": "index.js",
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com/@Marco5dev"
+    "@Marco5dev:registry": "https://npm.pkg.github.com"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
