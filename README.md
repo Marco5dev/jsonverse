@@ -17,11 +17,9 @@ npm install jsonverse
 const express = require("express");
 const router = express.Router();
 const jsonVerse = require("jsonVerse");
-// Specify the data folder path
-const dataFolderPath = path.join(__dirname, "../Data");
 
 // Initialize the JSONDatabase instance
-const db = new jsonVerse(dataFolderPath);
+const db = new jsonVerse("./path/to/your/data/folder"); // add the path to the data folder for example "./Data"
 ```
 ```javascript
 // Display all the website data
