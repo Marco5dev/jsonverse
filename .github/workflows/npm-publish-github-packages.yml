@@ -4,8 +4,10 @@
 name: Node.js Package Github
 
 on:
-  release:
+  comment:
     types: [created]
+    paths:
+      - 'package.json'
 
 jobs:
   build:

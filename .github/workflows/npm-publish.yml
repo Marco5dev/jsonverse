@@ -4,8 +4,10 @@
 name: Node.js Package NPM
 
 on:
-  release:
+  comment:
     types: [created]
+    paths:
+      - 'package.json'
 
 jobs:
   build:
