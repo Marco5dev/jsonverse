@@ -27,4 +27,4 @@ jobs:
       - name: Publish to npm
         run: npm publish
         env:
-          NODE_AUTH_TOKEN: ${{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}}  # Set up a secret for authentication
+          NODE_AUTH_TOKEN: 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 # Set up a secret for authentication
