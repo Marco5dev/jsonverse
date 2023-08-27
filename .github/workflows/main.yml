@@ -1,25 +1,25 @@
-name: Publish Package
+# name: Publish Package
 
-on:
-  push:
-    branches:
-      - main
+# on:
+#   push:
+#     branches:
+#       - main
 
-jobs:
-  publish:
-    runs-on: ubuntu-latest
+# jobs:
+#   publish:
+#     runs-on: ubuntu-latest
 
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+#     steps:
+#     - name: Checkout code
+#       uses: actions/checkout@v2
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: 14
+#     - name: Set up Node.js
+#       uses: actions/setup-node@v2
+#       with:
+#         node-version: 14
 
-    - name: Create .npmrc
-      run: echo "//npm.pkg.github.com/:_authToken=${secrets.NPM}" > .npmrc
+#     - name: Create .npmrc
+#       run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.NPM }}" > .npmrc
 
-    - name: Publish to GitHub Packages
-      run: npm publish --access public
+#     - name: Publish to GitHub Packages
+#       run: npm publish --access public
