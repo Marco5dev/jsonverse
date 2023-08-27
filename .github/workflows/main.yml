@@ -18,11 +18,8 @@ jobs:
       with:
         node-version: 14
 
-    - name: Publish to GitHub Packages
-      run: |
-        npm config set @marco5dev:registry https://npm.pkg.github.com
-        echo "//npm.pkg.github.com/:_authToken=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" > .npmrc
-        npm publish
+    - name: Create .npmrc
+      run: echo "//npm.pkg.github.com/:_authToken=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" > .npmrc
 
-      env:
-        GITHUB_USERNAME: marco5dev
+    - name: Publish to GitHub Packages
+      run: npm publish --access public
