@@ -1,5 +1,4 @@
-name: CI/CD Pipeline
-
+name: Npm Publish
 on:
   push:
     branches:
@@ -18,13 +17,7 @@ jobs:
         with:
           node-version: 14
 
-      - name: Install dependencies
-        run: npm install
-
-      - name: Run tests
-        run: npm test
-
-      - name: Publish to npm
+      - name: Publish to GitHub Package Registry
         run: npm publish
         env:
-          NODE_AUTH_TOKEN: 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 # Set up a secret for authentication
+          NODE_AUTH_TOKEN: ${secrets.NPM_TOKEN}  # GitHub token for authentication

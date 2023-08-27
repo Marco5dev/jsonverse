@@ -20,6 +20,6 @@
   },
   "homepage": "https://github.com/Marco5dev/jsonVerse#readme",
   "dependencies": {
-    "crypto": "^1.0.1"
+    "crypto": "^1.0.2"
   }
 }
