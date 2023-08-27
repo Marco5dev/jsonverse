@@ -19,7 +19,7 @@ jobs:
         node-version: 14
 
     - name: Create .npmrc
-      run: echo "//npm.pkg.github.com/:_authToken=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" > .npmrc
+      run: echo "//npm.pkg.github.com/:_authToken=${secrets.NPM}" > .npmrc
 
     - name: Publish to GitHub Packages
       run: npm publish --access public
