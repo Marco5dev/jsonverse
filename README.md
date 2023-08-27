@@ -37,12 +37,10 @@ router.get("/", async (req, res) => {
 router.post("/add", async (req, res) => {
   try {
     const { dataName, name, social, rank, competition, date, edu } = req.body; // here you have to add the dataName which is where you want to save the data in the json files you have, here i store the name of the dataName from the UI (User interface - Front end) 
+    // dataName is where you want to add the data (the json file)
 
-    // Generate a random unique ID
-    // this is a package you have to install
-    const uniqueID = uuid.v4();
+    // the data that you will store from the front end and save in the database
     const newData = {
-      id: uniqueID,
       social,
       name,
       rank,

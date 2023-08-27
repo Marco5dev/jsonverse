@@ -4,8 +4,7 @@
 name: Node.js Package NPM
 
 on:
-  issue_comment:
-    types: [created]
+  push:
     paths:
       - 'package.json'
 
