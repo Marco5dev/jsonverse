@@ -21,7 +21,7 @@ jobs:
     - name: Publish to GitHub Packages
       run: |
         npm config set @marco5dev:registry https://npm.pkg.github.com
-        echo "//npm.pkg.github.com/:_authToken=${{ secrets.NPM }}" > .npmrc
+        echo "//npm.pkg.github.com/:_authToken=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" > .npmrc
         npm publish
 
       env:
