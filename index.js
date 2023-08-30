@@ -9,7 +9,7 @@ class jsonVerse {
 
   async randomID() {
     return randomUUID();
-  }  
+  }
 
   getFilePath(dataName) {
     return path.join(this.dataFolderPath, `${dataName}.json`);
@@ -34,7 +34,20 @@ class jsonVerse {
   async writeDataByFileName(dataName, newData) {
     const filePath = this.getFilePath(dataName);
     try {
-      await fs.writeFile(filePath, JSON.stringify(newData, null, 2), "utf8");
+      let existingData = await this.readDataFromFile(dataName);
+      if (existingData === null) {
+        existingData = [];
+      }
+      if (existingData.length === 0) {
+        existingData.push(...newData);
+      } else {
+        existingData.push(newData);
+      }
+      await fs.writeFile(
+        filePath,
+        JSON.stringify(existingData, null, 2),
+        "utf8"
+      );
     } catch (error) {
       console.error(`Error writing to file ${filePath}: ${error}`);
     }
@@ -82,7 +95,9 @@ class jsonVerse {
       // Add the ID to the newData object
       newData.id = newId;
 
-      existingData.push(newData);
+      // Insert the newData object at the beginning of the existing data array
+      existingData.unshift(newData);
+
       await this.writeDataByFileName(dataName, existingData);
     }
   }
