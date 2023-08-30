@@ -8,7 +8,9 @@ class jsonVerse {
   }
 
   async randomID() {
-    return randomUUID();
+    const uuid = randomUUID();
+    const idWithoutHyphens = uuid.replace(/-/g, "");
+    return idWithoutHyphens;
   }
 
   getFilePath(dataName) {
@@ -19,6 +21,9 @@ class jsonVerse {
     const filePath = this.getFilePath(dataName);
     try {
       const data = await fs.readFile(filePath, "utf8");
+      if (data.trim() === "") {
+        return [];
+      }
       return JSON.parse(data);
     } catch (error) {
       console.error(`Error reading file ${filePath}: ${error}`);
@@ -35,14 +40,12 @@ class jsonVerse {
     const filePath = this.getFilePath(dataName);
     try {
       let existingData = await this.readDataFromFile(dataName);
+
       if (existingData === null) {
         existingData = [];
       }
-      if (existingData.length === 0) {
-        existingData.push(...newData);
-      } else {
-        existingData.push(newData);
-      }
+
+      existingData.push(...newData);
       await fs.writeFile(
         filePath,
         JSON.stringify(existingData, null, 2),
@@ -88,15 +91,18 @@ class jsonVerse {
   // Add Data
   async addData(dataName, newData) {
     const existingData = await this.readDataFromFile(dataName);
-    if (existingData) {
+    if (existingData || existingData !== null) {
       // Generate a random and unique ID
       const newId = await this.randomID();
 
-      // Add the ID to the newData object
-      newData.id = newId;
+      // Create a new object with the ID and newData
+      const newDataWithId = {
+        id: newId,
+        ...newData,
+      };
 
-      // Insert the newData object at the beginning of the existing data array
-      existingData.unshift(newData);
+      // Insert the newData object with ID at the beginning of the existing data array
+      existingData.unshift(newDataWithId);
 
       await this.writeDataByFileName(dataName, existingData);
     }
