@@ -16,10 +16,10 @@ npm install jsonverse
 // Import required modules and setup express router
 const express = require("express");
 const router = express.Router();
-const jsonVerse = require("jsonVerse");
+const jsonverse = require("jsonverse");
 
 // Initialize the JSONDatabase instance
-const db = new jsonVerse("./path/to/your/data/folder"); // add the path to the data folder for example "./Data"
+const db = new jsonverse("./path/to/your/data/folder"); // add the path to the data folder for example "./Data"
 ```
 ```javascript
 // Display all the website data
