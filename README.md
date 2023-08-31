@@ -2,9 +2,13 @@
 
 jsonVerse is a lightweight JSON-based database package for Node.js. It provides a simple interface to store, retrieve, and manage data using JSON files.
 
+## Introduction
+
+The jsonVerse package is a powerful utility designed to simplify the management of JSON data files within a designated folder. It offers methods for adding, editing, deleting, and retrieving data from JSON files. This wiki provides detailed examples and usage scenarios to help you effectively implement the jsonVerse package in your projects.
+
 ## Installation
 
-To install jsonVerse, use the following command:
+To begin using the jsonVerse package, you'll need to install it via npm. Open your terminal and run the following command:
 
 ```bash
 npm install jsonverse
@@ -12,34 +16,42 @@ npm install jsonverse
 
 ## Usage
 
+### Import and Initialization
+
+To get started, import the required modules, set up an Express router, and initialize the jsonVerse instance:
+
 ```javascript
-// Import required modules and setup express router
 const express = require("express");
-const router = express.Router();
+const app = express();
 const jsonverse = require("jsonverse");
 
 // Initialize the JSONDatabase instance
-const db = new jsonverse("./path/to/your/data/folder"); // add the path to the data folder for example "./Data"
+const db = new jsonverse("./path/to/your/data/folder");
 ```
+
+### Display All Data
+
+You can display all the data from your website using the following code:
+
 ```javascript
-// Display all the website data
-router.get("/", async (req, res) => {
+app.get("/", async (req, res) => {
   try {
-    const allData = await db.getAllData(); // getAllData is used if you have multiple json files andd you want to show them all
+    const allData = await db.getAllData();
     // ... (rendering logic)
   } catch (err) {
     // ... (error handling)
   }
 });
 ```
+
+### Add Data
+
+To add data, use the following code:
+
 ```javascript
-// Add data
 router.post("/add", async (req, res) => {
   try {
-    const { dataName, name, social, rank, competition, date, edu } = req.body; // here you have to add the dataName which is where you want to save the data in the json files you have, here i store the name of the dataName from the UI (User interface - Front end) 
-    // dataName is where you want to add the data (the json file)
-
-    // the data that you will store from the front end and save in the database
+    const { dataName, name, social, rank, competition, date, edu } = req.body;
     const newData = {
       social,
       name,
@@ -47,8 +59,7 @@ router.post("/add", async (req, res) => {
       competition,
       date,
       edu,
-    }; // whatever the data you want to receive from the front end form
-
+    };
     await db.addData(dataName, newData);
     // ... (redirect or response)
   } catch (err) {
@@ -56,8 +67,12 @@ router.post("/add", async (req, res) => {
   }
 });
 ```
+
+### Get Data by ID
+
+Retrieve data by its ID with this code:
+
 ```javascript
-// Get data by ID
 router.get("/:id", async (req, res) => {
   const id = req.params.id;
   try {
@@ -72,8 +87,12 @@ router.get("/:id", async (req, res) => {
   }
 });
 ```
+
+### Delete Data by ID
+
+Delete data by its ID using this code:
+
 ```javascript
-// Delete data by ID
 router.delete("/:id", async (req, res) => {
   const id = req.params.id;
   try {
@@ -84,15 +103,16 @@ router.delete("/:id", async (req, res) => {
   }
 });
 ```
+
+### Edit Data by ID
+
+Edit existing data using this code:
+
 ```javascript
-// Edit data by ID
 app.post("/edit/:id", async (req, res) => {
   const id = req.params.id;
   const { name, social, rank, competition, date, edu } = req.body;
-
   try {
-    const existingData = await db.findDataById(id);
-
     const updatedData = {
       social,
       name,
@@ -100,11 +120,15 @@ app.post("/edit/:id", async (req, res) => {
       competition,
       date,
       edu,
-    }; // whatever the data you want to receive from the front end form
-
-    await db.editDataById(id, updatedData)
+    };
+    await db.editDataById(id, updatedData);
     // ... (response or redirect)
   } catch (err) {
-   // ... (error handling)
+    // ... (error handling)
   }
 });
+```
+
+## Conclusion
+
+The jsonVerse package simplifies the management of JSON data files within a specified folder. With the provided examples and usage instructions, you'll be able to efficiently integrate the jsonVerse package into your projects to streamline data operations.

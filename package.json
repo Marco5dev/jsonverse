@@ -1,6 +1,6 @@
 {
   "name": "jsonverse",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "jsonVerse is a lightweight JSON-based database package for Node.js. It provides a simple interface to store, retrieve, and manage data using JSON files.",
   "main": "index.js",
   "publishConfig": {
@@ -11,12 +11,51 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/marco5dev/jsonverse.git"
+    "url": "git+https://github.com/marco5dev/jsonverse.git"
   },
   "author": "marco5dev",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/Marco5dev/jsonverse/issues"
   },
-  "homepage": "https://github.com/Marco5dev/jsonverse#readme"
+  "homepage": "https://github.com/Marco5dev/jsonverse#readme",
+  "keywords": [
+    "JSON",
+    "database",
+    "lightweight",
+    "database",
+    "data",
+    "storage",
+    "data",
+    "management",
+    "NoSQL",
+    "JSON",
+    "files",
+    "database",
+    "package",
+    "Node.js",
+    "data",
+    "persistence",
+    "data",
+    "manipulation",
+    "CRUD",
+    "operations",
+    "document-oriented",
+    "data",
+    "handling",
+    "key-value",
+    "store",
+    "schema-less",
+    "database",
+    "solution",
+    "data",
+    "modeling",
+    "JSON",
+    "storage",
+    "data",
+    "querying",
+    "jsonverse",
+    "jsonVerse",
+    "db."
+  ]
 }
