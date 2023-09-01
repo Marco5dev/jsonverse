@@ -1,6 +1,6 @@
 {
   "name": "jsonverse",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "jsonVerse is a lightweight JSON-based database package for Node.js. It provides a simple interface to store, retrieve, and manage data using JSON files.",
   "main": "index.js",
   "publishConfig": {
