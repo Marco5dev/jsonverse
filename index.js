@@ -2,6 +2,7 @@ const fs = require("fs").promises;
 const path = require("path");
 const { randomUUID } = require("crypto");
 const readline = require('readline');
+const colors = require('./lib/colors');
 
 class jsonverse {
   constructor(dataFolderPath) {
@@ -13,21 +14,21 @@ class jsonverse {
     try {
       await fs.access(this.dataFolderPath);
     } catch (error) {
-      console.log(`The path "${this.dataFolderPath}" doesn't exist.`);
+      console.log(`\x1b[34m[Info]: \x1b[0mThe path "${this.dataFolderPath}" doesn't exist.`);
 
       const answer = await this.askForConfirmation(
-        `Do you want to create the path folder? (Y/N): `
+        `\x1b[33m[Question]: \x1b[0mDo you want to create the path folder? (Y/N): `
       );
 
       if (answer.toLowerCase() === "y" || answer.toLowerCase() === "yes") {
         try {
           await fs.mkdir(this.dataFolderPath, { recursive: true });
-          console.log(`Path folder created successfully.`);
+          console.log(`\x1b[32m[Successful]: \x1b[0mPath folder created successfully.`);
         } catch (error) {
-          console.error(`Error creating path folder: ${error}`);
+          console.error(`\x1b[31m[Error]: \x1b[0mCreating path folder: ${error}`);
         }
       } else {
-        console.log(`Path folder not created.`);
+        console.log(`\x1b[34m[Info]: \x1b[0mPath folder not created.`);
       }
     }
 
@@ -38,21 +39,21 @@ class jsonverse {
     try {
       await fs.access(filePath);
     } catch (error) {
-      console.log(`The file "${filePath}" doesn't exist.`);
+      console.log(`\x1b[34m[Info]: \x1b[0mThe file "${filePath}" doesn't exist.`);
 
       const answer = await this.askForConfirmation(
-        `Do you want to create the file? (Y/N): `
+        `\x1b[33m[Question]: \x1b[0mDo you want to create the file? (Y/N): `
       );
 
       if (answer.toLowerCase() === "y" || answer.toLowerCase() === "yes") {
         try {
           await fs.writeFile(filePath, "[]");
-          console.log(`File created successfully.`);
+          console.log(`\x1b[32m[Successful]: \x1b[0mFile created successfully.`);
         } catch (error) {
-          console.error(`Error creating file: ${error}`);
+          console.error(`\x1b[31m[Error]: \x1b[0mCreating file: ${error}`);
         }
       } else {
-        console.log(`File not created.`);
+        console.log(`\x1b[34m[Info]: \x1b[0mFile not created.`);
       }
     }
   }
@@ -94,7 +95,7 @@ class jsonverse {
     } catch (error) {
       if (error.code === 'ENOENT') {
         await this.initFile(filePath).catch(initError => {
-          console.error(`Error initializing file: ${initError}`);
+          console.error(`\x1b[31m[Error]: \x1b[0mInitializing file: ${initError}`);
         });
         // Retry reading the file
         try {
@@ -104,11 +105,11 @@ class jsonverse {
           }
           return JSON.parse(newData);
         } catch (readError) {
-          console.error(`Error reading file ${filePath}: ${readError}`);
+          console.error(`\x1b[31m[Error]: \x1b[0mreading file ${filePath}: ${readError}`);
           return null;
         }
       } else {
-        console.error(`Error reading file ${filePath}: ${error}`);
+        console.error(`\x1b[31m[Error]: \x1b[0mreading file ${filePath}: ${error}`);
         return null;
       }
     }
@@ -135,7 +136,7 @@ class jsonverse {
         "utf8"
       );
     } catch (error) {
-      console.error(`Error writing to file ${filePath}: ${error}`);
+      console.error(`\x1b[31m[Error]: \x1b[0mwriting to file ${filePath}: ${error}`);
     }
   }
 
@@ -144,7 +145,7 @@ class jsonverse {
     try {
       await fs.writeFile(filePath, JSON.stringify(newData, null, 2), "utf8");
     } catch (error) {
-      console.error(`Error writing to item with ID: ${filePath}: ${error}`);
+      console.error(`\x1b[31m[Error]: \x1b[0mwriting to item with ID: ${filePath}: ${error}`);
     }
   }
 
@@ -164,9 +165,9 @@ class jsonverse {
         };
         // Write the updated data back to the file
         await this.writeDataById(id, existingData);
-        console.log(`Item with ID ${id} has been edited.`);
+        console.log(`\x1b[32m[Successful]: \x1b[0mItem with ID ${id} has been edited.`);
       } else {
-        console.log(`Item with ID ${id} not found.`);
+        console.log(`\x1b[34m[Info]: \x1b[0mItem with ID ${id} not found.`);
       }
     }
   }
@@ -187,9 +188,11 @@ class jsonverse {
       // Insert the newData object with ID at the beginning of the existing data array
       existingData.unshift(newDataWithId);
 
-      await this.writeDataByFileName(dataName, existingData);
+      await this.writeDataByFileName(dataName, existingData).then(() => {
+        console.log(`\x1b[32m[Successful]: \x1b[0mNew Data added to DB: ${dataName}`)
+      })
     } else {
-      console.error(`Error: Data failed to be added to the DB: ${dataName}`);
+      console.error(`\x1b[31m[Error]: \x1b[0m Data failed to be added to the DB: ${dataName}`);
     }
   }
 
@@ -204,17 +207,17 @@ class jsonverse {
         const newData = data.filter((item) => item.id !== id);
         await this.writeDataByFileName(dataName, newData);
 
-        console.log(`Item has been deleted.`);
-        console.log(`Deleted item:`, dataItemToDelete);
+        console.log(`\x1b[32m[Successful]: \x1b[0mItem has been deleted.`);
+        console.log(`\x1b[32m[Successful]: \x1b[0mDeleted item:`, dataItemToDelete);
 
         if (typeof window == "undefined") {
-          console.log("Item Deleted successfully!");
+          console.log("\x1b[32m[Successful]: \x1b[0mItem Deleted successfully!");
         }
       } else {
-        console.log(`Item is already deleted.`);
+        console.log(`\x1b[34m[Info]: \x1b[0mItem is already deleted.`);
       }
     } catch (error) {
-      console.error("Error deleting data:", error);
+      console.error("\x1b[31m[Error]: \x1b[0m deleting data:", error);
     }
   }
 
