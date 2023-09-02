@@ -2,6 +2,8 @@
 
 jsonVerse is a lightweight JSON-based database package for Node.js. It provides a simple interface to store, retrieve, and manage data using JSON files.
 
+[![Node.js Package NPM](https://github.com/Marco5dev/jsonverse/actions/workflows/npm-publish.yml/badge.svg)](https://github.com/Marco5dev/jsonverse/actions/workflows/npm-publish.yml)
+
 ## Introduction
 
 The jsonVerse package is a powerful utility designed to simplify the management of JSON data files within a designated folder. It offers methods for adding, editing, deleting, and retrieving data from JSON files. This wiki provides detailed examples and usage scenarios to help you effectively implement the jsonVerse package in your projects.
