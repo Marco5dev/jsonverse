@@ -9,7 +9,7 @@ We are currently supporting the following versions of the `jsonverse` package:
 
 ## Reporting a Vulnerability
 
-If you discover a security vulnerability within the `jsonverse` package, please send an email to marco5dev@outlook.com. All security vulnerabilities will be promptly addressed.
+If you discover a security vulnerability within the `jsonverse` package, please send an email to marco5dev@example.com. All security vulnerabilities will be promptly addressed.
 
 Please do not open GitHub issues for security vulnerabilities.
 
