@@ -49,7 +49,7 @@ app.get("/", async (req, res) => {
 To add data, use the following code:
 
 ```javascript
-router.post("/add", async (req, res) => {
+app.post("/add", async (req, res) => {
   try {
     const { dataName, name, social, rank, competition, date, edu } = req.body;
     const newData = {
@@ -73,7 +73,7 @@ router.post("/add", async (req, res) => {
 Retrieve data by its ID with this code:
 
 ```javascript
-router.get("/:id", async (req, res) => {
+app.get("/:id", async (req, res) => {
   const id = req.params.id;
   try {
     const result = await db.findDataById(id);
@@ -93,7 +93,7 @@ router.get("/:id", async (req, res) => {
 Delete data by its ID using this code:
 
 ```javascript
-router.delete("/:id", async (req, res) => {
+app.delete("/:id", async (req, res) => {
   const id = req.params.id;
   try {
     await db.deleteDataById(id);
