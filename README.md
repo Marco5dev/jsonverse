@@ -53,7 +53,7 @@ To add data, use the following code:
 ```javascript
 app.post("/add", async (req, res) => {
   try {
-    const { dataName, name, social, rank, competition, date, edu } = req.body;
+    const { dataName, name, social, rank, competition, date, edu, password } = req.body;
     const newData = {
       social,
       name,
@@ -61,6 +61,7 @@ app.post("/add", async (req, res) => {
       competition,
       date,
       edu,
+      password: db.encryptData(password, "Your-Secret-Key"),
     };
     await db.addData(dataName, newData);
     // ... (redirect or response)
@@ -81,6 +82,8 @@ app.get("/:id", async (req, res) => {
     const result = await db.findDataById(id);
     if (result) {
       // ... (rendering logic)
+      // remember if the retreved data contained encrypted data to use
+      // db.decryptData(encryptedData, secretKey)
     } else {
       // ... (not found logic)
     }
@@ -129,6 +132,31 @@ app.post("/edit/:id", async (req, res) => {
     // ... (error handling)
   }
 });
+```
+
+### Backup
+
+backup the data json files you want by the dataName in Backup folder in Data Folder (the package create it automatically)
+
+```js
+db.createDataBackup(dataName) // the name of the data file you want to backup
+```
+
+### Restore Backup
+
+Restore the backedup data json files you want by the dataName in Backup folder in Data Folder (the package create it automatically)
+
+```js
+db.restoreDataFromBackup(dataName, backupFileName) // the name of the data file you want to backup and the name of the backedup file you will get the name after backing up
+```
+
+### Delete Backup
+
+Delete the backedup data json files you want by the dataName in Backup folder in Data Folder (the package create it automatically)
+
+```js
+db.cleanupOldBackups(dataName, retentionDays) // the name of the data file you want to backup and the time you want to delete the files since then
+// like i have backups from the day before i will but the date with YYYYMMDDHHMMss
 ```
 
 ## Conclusion

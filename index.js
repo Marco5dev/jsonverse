@@ -2,12 +2,38 @@
 const fs = require("fs").promises;
 const path = require("path");
 const { randomUUID } = require("crypto");
-// const winston = require("winston");
 const csv = require("csv-parser");
 const crypto = require("crypto-js");
-const dateFormat = require("dateformat");
 const Fuse = require("fuse.js");
-const colors = require("./lib/colors")
+const colors = require("./lib/colors");
+
+function getDateTime() {
+  var now = new Date();
+  var year = now.getFullYear();
+  var month = now.getMonth() + 1;
+  var day = now.getDate();
+  var hour = now.getHours();
+  var minute = now.getMinutes();
+  var second = now.getSeconds();
+  if (month.toString().length == 1) {
+    month = "0" + month;
+  }
+  if (day.toString().length == 1) {
+    day = "0" + day;
+  }
+  if (hour.toString().length == 1) {
+    hour = "0" + hour;
+  }
+  if (minute.toString().length == 1) {
+    minute = "0" + minute;
+  }
+  if (second.toString().length == 1) {
+    second = "0" + second;
+  }
+  var dateTime = year + month + day + hour + minute + second;
+  return dateTime;
+}
+const currentTime = getDateTime();
 
 class jsonverse {
   constructor(dataFolderPath) {
@@ -37,56 +63,109 @@ class jsonverse {
   async createDataBackup(dataName) {
     const currentData = await this.readDataFromFile(dataName);
     if (currentData !== null) {
-      const backupFileName = `${dataName}_${dateFormat(
-        new Date(),
-        "yyyymmddHHMMss"
-      )}.json`;
+      const backupFileName = `./Backup/${dataName}_${currentTime}.json`;
       const backupFilePath = path.join(this.dataFolderPath, backupFileName);
-      await fs.writeFile(
-        backupFilePath,
-        JSON.stringify(currentData, null, 2),
-        "utf8"
-      );
-      console.log(`${colors.fg.green}[Successful]: ${colors.reset}Data backup created: ${backupFileName}`);
+      try {
+        await fs.writeFile(
+          backupFilePath,
+          JSON.stringify(currentData, null, 2),
+          "utf8"
+        );
+        console.log(
+          `${colors.fg.green}[Successful]: ${colors.reset}Data backup created: ${backupFileName}`
+        );
+      } catch (error) {
+        if (error.code === "ENOENT") {
+          await fs.mkdir("./Data/Backup", { recursive: true });
+          try {
+            await fs.writeFile(
+              backupFilePath,
+              JSON.stringify(currentData, null, 2),
+              "utf8"
+            );
+            console.log(
+              `${colors.fg.green}[Successful]: ${colors.reset}Data backup created: ${backupFileName}`
+            );
+          } catch (readError) {
+            console.log(
+              `${colors.fg.red}[Error]: ${colors.reset}Failed to create data backup for ${dataName}: ${readError}`
+            );
+            return null;
+          }
+        } else {
+          console.log(
+            `${colors.fg.red}[Error]: ${colors.reset}Failed to create data backup for ${dataName}: ${error}`
+          );
+          return null;
+        }
+      }
     } else {
-      console.log(`${colors.fg.red}[Error]: ${colors.reset}Failed to create data backup for ${dataName}`);
+      console.log(
+        `${colors.fg.red}[Error]: ${colors.reset}Failed to create data backup for ${dataName}`
+      );
     }
   }
 
   // Restore Data from Backup
   async restoreDataFromBackup(dataName, backupFileName) {
-    const backupFilePath = path.join(this.dataFolderPath, backupFileName);
+    const backupFilePath = path.join(
+      this.dataFolderPath + "/Backup",
+      backupFileName + ".json"
+    );
     try {
       const backupData = await fs.readFile(backupFilePath, "utf8");
-      await this.writeDataByFileName(dataName, JSON.parse(backupData));
-      console.log(`${colors.fg.green}[Successful]: ${colors.reset}Data restored from backup: ${backupFileName}`);
+      await this.writeDataByFileName(dataName, JSON.parse(backupData)); // Replace data in the file
+      console.log(
+        `${colors.fg.green}[Successful]: ${colors.reset}Data restored from backup: ${backupFileName}`
+      );
     } catch (error) {
-      console.log(`${colors.fg.red}[Error]: ${colors.reset}Failed to restore data from backup: ${backupFileName}`);
+      console.log(
+        `${colors.fg.red}[Error]: ${colors.reset}Failed to restore data from backup: ${backupFileName}: ${error}`
+      );
     }
   }
 
   // Cleanup Old Backups
   async cleanupOldBackups(dataName, retentionDays) {
     const backupFiles = await this.getBackupFiles(dataName);
-    const currentDate = new Date();
+    const currentDate = new Date(currentTime);
 
     for (const backupFile of backupFiles) {
-      const backupDateStr = backupFile.split("_")[1].split(".")[0];
-      const backupDate = dateFormat(backupDateStr, "yyyymmddHHMMss");
-      const diffInDays =
-        (currentDate - new Date(backupDate)) / (1000 * 60 * 60 * 24);
+      const backupDateStr = backupFile.split("_")[1].split(".json")[0];
+      const year = parseInt(backupDateStr.slice(0, 4));
+      const month = parseInt(backupDateStr.slice(4, 6)) - 1; // Months are 0-indexed
+      const day = parseInt(backupDateStr.slice(6, 8));
+      const hour = parseInt(backupDateStr.slice(8, 10));
+      const minute = parseInt(backupDateStr.slice(10, 12));
+      const second = parseInt(backupDateStr.slice(12, 14));
+
+      const backupDate = new Date(year, month, day, hour, minute, second);
+      const diffInDays = Math.floor(
+        (currentDate - backupDate) / (1000 * 60 * 60 * 24)
+      );
 
       if (diffInDays > retentionDays) {
-        const backupFilePath = path.join(this.dataFolderPath, backupFile);
-        await fs.unlink(backupFilePath);
-        console.log(`${colors.fg.green}[Successful]: ${colors.reset}Backup deleted: ${backupFile}`);
+        const backupFilePath = path.join(
+          this.dataFolderPath + "/Backup",
+          backupFile
+        );
+        try {
+          await fs.unlink(backupFilePath);
+          console.log(
+            `${colors.fg.green}[Successful]: ${colors.reset}Backup deleted: ${backupFile}`
+          );
+        } catch (deleteError) {
+          console.log(
+            `${colors.fg.red}[Error]: ${colors.reset}Failed to delete backup: ${backupFile}: ${deleteError}`
+          );
+        }
       }
     }
   }
 
   // Get Backup Files
   async getBackupFiles(dataName) {
-    const files = await fs.readdir(this.dataFolderPath);
+    const files = await fs.readdir(this.dataFolderPath + "/Backup");
     const backupFiles = files.filter((file) => file.startsWith(`${dataName}_`));
     return backupFiles;
   }
@@ -114,7 +193,9 @@ class jsonverse {
     try {
       await fs.access(this.dataFolderPath);
     } catch (error) {
-      console.log(`${colors.fg.red}[Error]: ${colors.reset}The path "${this.dataFolderPath}" doesn't exist.`);
+      console.log(
+        `${colors.fg.red}[Error]: ${colors.reset}The path "${this.dataFolderPath}" doesn't exist.`
+      );
       const answer = await this.askForConfirmation(
         `${colors.fg.yellow}[Question]: ${colors.reset}Do you want to create the path folder? (Y/N): `
       );
@@ -122,12 +203,18 @@ class jsonverse {
       if (answer.toLowerCase() === "y" || answer.toLowerCase() === "yes") {
         try {
           await fs.mkdir(this.dataFolderPath, { recursive: true });
-          console.log(`${colors.fg.green}[Successful]: ${colors.reset}Path folder created successfully.`);
+          console.log(
+            `${colors.fg.green}[Successful]: ${colors.reset}Path folder created successfully.`
+          );
         } catch (error) {
-          console.log(`${colors.fg.red}[Error]: ${colors.reset}Creating path folder: ${error}`);
+          console.log(
+            `${colors.fg.red}[Error]: ${colors.reset}Creating path folder: ${error}`
+          );
         }
       } else {
-        console.log(`${colors.fg.blue}[Info]: ${colors.reset}Path folder not created.`);
+        console.log(
+          `${colors.fg.blue}[Info]: ${colors.reset}Path folder not created.`
+        );
       }
     }
 
@@ -138,7 +225,9 @@ class jsonverse {
     try {
       await fs.access(filePath);
     } catch (error) {
-      console.log(`${colors.fg.red}[Error]: ${colors.reset}The file "${filePath}" doesn't exist.`);
+      console.log(
+        `${colors.fg.red}[Error]: ${colors.reset}The file "${filePath}" doesn't exist.`
+      );
       const answer = await this.askForConfirmation(
         `${colors.fg.yellow}[Question]: ${colors.reset}Do you want to create the file? (Y/N): `
       );
@@ -146,12 +235,18 @@ class jsonverse {
       if (answer.toLowerCase() === "y" || answer.toLowerCase() === "yes") {
         try {
           await fs.writeFile(filePath, "[]");
-          console.log(`${colors.fg.green}[Successful]: ${colors.reset}File created successfully.`);
+          console.log(
+            `${colors.fg.green}[Successful]: ${colors.reset}File created successfully.`
+          );
         } catch (error) {
-          console.log(`${colors.fg.red}[Error]: ${colors.reset}Creating file: ${error}`);
+          console.log(
+            `${colors.fg.red}[Error]: ${colors.reset}Creating file: ${error}`
+          );
         }
       } else {
-        console.log(`${colors.fg.blue}[Info]: ${colors.reset}File not created.`);
+        console.log(
+          `${colors.fg.blue}[Info]: ${colors.reset}File not created.`
+        );
       }
     }
   }
@@ -184,7 +279,9 @@ class jsonverse {
       // Export as JSON
       const filePath = this.getFilePath(dataName + ".json");
       await fs.writeFile(filePath, JSON.stringify(data, null, 2), "utf8");
-      console.log(`${colors.fg.green}[Successful]: ${colors.reset}Data exported to JSON: ${filePath}`);
+      console.log(
+        `${colors.fg.green}[Successful]: ${colors.reset}Data exported to JSON: ${filePath}`
+      );
     } else if (format === "csv") {
       // Export as CSV
       const filePath = this.getFilePath(dataName + ".csv");
@@ -196,7 +293,9 @@ class jsonverse {
       });
       const csvString = await this.convertToCSV(csvData);
       await fs.writeFile(filePath, csvString, "utf8");
-      console.log(`${colors.fg.green}[Successful]: ${colors.reset}Data exported to CSV: ${filePath}`);
+      console.log(
+        `${colors.fg.green}[Successful]: ${colors.reset}Data exported to CSV: ${filePath}`
+      );
     }
   }
 
@@ -207,12 +306,16 @@ class jsonverse {
       const rawData = await fs.readFile(filePath, "utf8");
       const newData = JSON.parse(rawData);
       await this.writeDataByFileName(dataName, newData);
-      console.log(`${colors.fg.green}[Successful]: ${colors.reset}Data imported from JSON: ${filePath}`);
+      console.log(
+        `${colors.fg.green}[Successful]: ${colors.reset}Data imported from JSON: ${filePath}`
+      );
     } else if (format === "csv") {
       // Import CSV
       const csvData = await this.readCSV(filePath);
       await this.writeDataByFileName(dataName, csvData);
-      console.log(`${colors.fg.green}[Successful]: ${colors.reset}Data imported from CSV: ${filePath}`);
+      console.log(
+        `${colors.fg.green}[Successful]: ${colors.reset}Data imported from CSV: ${filePath}`
+      );
     }
   }
 
@@ -221,7 +324,9 @@ class jsonverse {
     const data = await this.readDataFromFile(dataName);
     const transformedData = data.map(transformFunction);
     await this.writeDataByFileName(dataName, transformedData);
-    console.log(`${colors.fg.green}[Successful]: ${colors.reset}Data transformed and saved.`);
+    console.log(
+      `${colors.fg.green}[Successful]: ${colors.reset}Data transformed and saved.`
+    );
   }
 
   // Helper method to convert data to CSV
@@ -258,7 +363,9 @@ class jsonverse {
     } catch (error) {
       if (error.code === "ENOENT") {
         await this.initFile(filePath).catch((initError) => {
-          console.log(`${colors.fg.red}[Error]: ${colors.reset}Initializing file: ${initError}`);
+          console.log(
+            `${colors.fg.red}[Error]: ${colors.reset}Initializing file: ${initError}`
+          );
         });
         // Retry reading the file
         try {
@@ -268,11 +375,15 @@ class jsonverse {
           }
           return JSON.parse(newData);
         } catch (readError) {
-          console.log(`${colors.fg.red}[Error]: ${colors.reset}Reading file ${filePath}: ${readError}`);
+          console.log(
+            `${colors.fg.red}[Error]: ${colors.reset}Reading file ${filePath}: ${readError}`
+          );
           return null;
         }
       } else {
-        console.log(`${colors.fg.red}[Error]: ${colors.reset}Reading file ${filePath}: ${error}`);
+        console.log(
+          `${colors.fg.red}[Error]: ${colors.reset}Reading file ${filePath}: ${error}`
+        );
         return null;
       }
     }
@@ -299,7 +410,9 @@ class jsonverse {
         "utf8"
       );
     } catch (error) {
-      console.log(`${colors.fg.red}[Error]: ${colors.reset}Writing to file ${filePath}: ${error}`);
+      console.log(
+        `${colors.fg.red}[Error]: ${colors.reset}Writing to file ${filePath}: ${error}`
+      );
     }
   }
 
@@ -308,7 +421,9 @@ class jsonverse {
     try {
       await fs.writeFile(filePath, JSON.stringify(newData, null, 2), "utf8");
     } catch (error) {
-      console.log(`${colors.fg.red}[Error]: ${colors.reset}Writing to item with ID: ${filePath}: ${error}`);
+      console.log(
+        `${colors.fg.red}[Error]: ${colors.reset}Writing to item with ID: ${filePath}: ${error}`
+      );
     }
   }
 
@@ -328,9 +443,13 @@ class jsonverse {
         };
         // Write the updated data back to the file
         await this.writeDataById(id, existingData);
-        console.log(`${colors.fg.green}[Successful]: ${colors.reset}Item with ID ${id} has been edited.`);
+        console.log(
+          `${colors.fg.green}[Successful]: ${colors.reset}Item with ID ${id} has been edited.`
+        );
       } else {
-        console.log(`${colors.fg.blue}[Info]: ${colors.reset}Item with ID ${id} not found.`);
+        console.log(
+          `${colors.fg.blue}[Info]: ${colors.reset}Item with ID ${id} not found.`
+        );
       }
     }
   }
@@ -349,10 +468,14 @@ class jsonverse {
       existingData.unshift(newDataWithId);
 
       await this.writeDataByFileName(dataName, existingData).then(() => {
-        console.log(`${colors.fg.green}[Successful]: ${colors.reset}New Data added to DB: ${dataName}`);
+        console.log(
+          `${colors.fg.green}[Successful]: ${colors.reset}New Data added to DB: ${dataName}`
+        );
       });
     } else {
-      console.log(`${colors.fg.red}[Error]: ${colors.reset}Data failed to be added to the DB: ${dataName}`);
+      console.log(
+        `${colors.fg.red}[Error]: ${colors.reset}Data failed to be added to the DB: ${dataName}`
+      );
     }
   }
 
@@ -367,17 +490,29 @@ class jsonverse {
         const newData = data.filter((item) => item.id !== id);
         await this.writeDataByFileName(dataName, newData);
 
-        console.log(`${colors.fg.green}[Successful]: ${colors.reset}Item has been deleted.`);
-        console.log(`${colors.fg.blue}[Info]: ${colors.reset}Deleted item:`, dataItemToDelete);
+        console.log(
+          `${colors.fg.green}[Successful]: ${colors.reset}Item has been deleted.`
+        );
+        console.log(
+          `${colors.fg.blue}[Info]: ${colors.reset}Deleted item:`,
+          dataItemToDelete
+        );
 
         if (typeof window == "undefined") {
-          console.log(`${colors.fg.green}[Successful]: ${colors.reset}Item Deleted successfully!`);
+          console.log(
+            `${colors.fg.green}[Successful]: ${colors.reset}Item Deleted successfully!`
+          );
         }
       } else {
-        console.log(`${colors.fg.blue}[Info]: ${colors.reset}Item is already deleted.`);
+        console.log(
+          `${colors.fg.blue}[Info]: ${colors.reset}Item is already deleted.`
+        );
       }
     } catch (error) {
-      console.log(`${colors.fg.red}[Error]: ${colors.reset}Deleting data:`, error);
+      console.log(
+        `${colors.fg.red}[Error]: ${colors.reset}Deleting data:`,
+        error
+      );
     }
   }
 
