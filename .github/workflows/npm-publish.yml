@@ -1,9 +1,12 @@
 name: Node.js Package NPM
 
+# on:
+#   push:
+#     paths:
+#       - 'package.json'
 on:
-  push:
-    paths:
-      - 'package.json'
+  release:
+    types: [created]
 
 jobs:
   build:
