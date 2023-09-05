@@ -28,7 +28,7 @@ const app = express();
 const jsonverse = require("jsonverse");
 
 // Initialize the JSONDatabase instance
-const db = new jsonverse("./path/to/your/data/folder");
+const db = new jsonverse("./path/to/your/data/folder", true); // to activate the logs write after the path true to activate it
 ```
 
 ### Display All Data
@@ -38,8 +38,29 @@ You can display all the data from your website using the following code:
 ```javascript
 app.get("/", async (req, res) => {
   try {
-    const allData = await db.getAllData();
+    const allData = await db.allData();
     // ... (rendering logic)
+  } catch (err) {
+    // ... (error handling)
+  }
+});
+```
+
+### Display Data from a specific data json file
+
+you can display data from a specific data file by file name
+
+```javascript
+app.get("/", async (req, res) => {
+  try {
+    db
+      .readData(dataName) // dataName: the name of the json file like test.json the data name will be "test"
+       .then((result) => {
+         res.send(result); // result is the content of the json file
+        })
+        .catch((err) => {
+          console.log(err);
+       });
   } catch (err) {
     // ... (error handling)
   }
@@ -53,7 +74,8 @@ To add data, use the following code:
 ```javascript
 app.post("/add", async (req, res) => {
   try {
-    const { dataName, name, social, rank, competition, date, edu, password } = req.body;
+    const { dataName, name, social, rank, competition, date, edu, password } =
+      req.body;
     const newData = {
       social,
       name,
@@ -61,9 +83,9 @@ app.post("/add", async (req, res) => {
       competition,
       date,
       edu,
-      password: db.encryptData(password, "Your-Secret-Key"),
+      password: db.encrypt(password, "Your-Secret-Key"),
     };
-    await db.addData(dataName, newData);
+    await db.saveData(dataName, newData);
     // ... (redirect or response)
   } catch (err) {
     // ... (error handling)
@@ -79,11 +101,11 @@ Retrieve data by its ID with this code:
 app.get("/:id", async (req, res) => {
   const id = req.params.id;
   try {
-    const result = await db.findDataById(id);
+    const result = await db.findById(id);
     if (result) {
       // ... (rendering logic)
-      // remember if the retreved data contained encrypted data to use
-      // db.decryptData(encryptedData, secretKey)
+      // remember if the retrieved data contained encrypted data to use
+      // db.decrypt(encryptedData, secretKey)
     } else {
       // ... (not found logic)
     }
@@ -101,7 +123,7 @@ Delete data by its ID using this code:
 app.delete("/:id", async (req, res) => {
   const id = req.params.id;
   try {
-    await db.deleteDataById(id);
+    await db.delById(id);
     // ... (response or redirect)
   } catch (err) {
     // ... (error handling)
@@ -126,7 +148,7 @@ app.post("/edit/:id", async (req, res) => {
       date,
       edu,
     };
-    await db.editDataById(id, updatedData);
+    await db.editById(id, updatedData);
     // ... (response or redirect)
   } catch (err) {
     // ... (error handling)
@@ -134,29 +156,68 @@ app.post("/edit/:id", async (req, res) => {
 });
 ```
 
+### Encrypt/Decrypt
+
+you can encrypt/decrypt the data that you are saving by this commend
+
+- Encrypt
+
+```javascript
+db.encrypt(data, secretKey);
+```
+
+- Decrypt
+
+```javascript
+db.decrypt(encryptedData, secretKey);
+```
+
 ### Backup
 
-backup the data json files you want by the dataName in Backup folder in Data Folder (the package create it automatically)
+backup the data files you want by the dataName in Backup folder in Data Folder (the package create it automatically)
 
-```js
-db.createDataBackup(dataName) // the name of the data file you want to backup
+```javascript
+db.backupCreate(dataName); //  dataName: the name of the data file you want to backup
 ```
 
 ### Restore Backup
 
-Restore the backedup data json files you want by the dataName in Backup folder in Data Folder (the package create it automatically)
+Restore the backup data files you want by the dataName in Backup `./Data/Backup` ./Data is the path you add to the data folder
 
-```js
-db.restoreDataFromBackup(dataName, backupFileName) // the name of the data file you want to backup and the name of the backedup file you will get the name after backing up
+```javascript
+db.backupRestore(dataName, backupFileName); // the dataName is the data you want to restore to it & the backupFileName is the backup file name you got after backing up
 ```
 
 ### Delete Backup
 
-Delete the backedup data json files you want by the dataName in Backup folder in Data Folder (the package create it automatically)
+Delete the backup data json files you want by the dataName in Backup folder in Data Folder (the package create it automatically)
 
-```js
-db.cleanupOldBackups(dataName, retentionDays) // the name of the data file you want to backup and the time you want to delete the files since then
-// like i have backups from the day before i will but the date with YYYYMMDDHHMMss
+```javascript
+const retentionDays = 5; // write here with days the time you want to delete the backups since then like i want to delete the backup the had been saved the last 5 days
+db.backupDelete(dataName, retentionDays);
+```
+
+### Import/Export Data
+
+- Import
+
+you can import data from json files from outside the project files
+
+```javascript
+db.importData(dataName, (format = "json"), filePath);
+// dataName: the data file you want to import to if exist if doesn't write the new data name instead
+// format: to set the format to json you don't need to write it it's json by default
+// filePath: where is the file you want to import
+```
+
+- Export
+
+you can Export data from json files
+
+```javascript
+db.exportData(dataName, (format = "json"));
+// dataName: the data file you want to Export
+// format: to set the format of the new exported file like json and csv
 ```
 
 ## Conclusion
