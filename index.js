@@ -1,10 +1,10 @@
 /*!
- * 
- * Copyright(c) 2023 Mark Maher Ewdia
+ *
+ * Copyright(c) 2023 Mark Maher Ewida
  * MIT Licensed
  */
 
-'use strict';
+"use strict";
 
 const fs = require("fs").promises;
 const path = require("path");
@@ -25,7 +25,7 @@ function formatDateTime(date) {
 }
 
 const currentDate = formatDateTime(new Date());
-const currentTime = currentDate.replace(/\D/g, ''); // Remove non-numeric characters
+const currentTime = currentDate.replace(/\D/g, ""); // Remove non-numeric characters
 
 class jsonverse {
   constructor(dataFolderPath, activateLogs) {
@@ -34,38 +34,73 @@ class jsonverse {
     this.backupFolderPath = path.join(this.dataFolderPath, "Backup");
     this.logFilePath = path.join(this.logFolderPath, "app.log");
     this.enableLogToConsoleAndFile = activateLogs;
-    this.init();
     this.searchIndex = {};
+
+    this.init();
   }
 
   async logToConsoleAndFile(message) {
     // Function to remove ANSI escape codes from a string
     function removeAnsiEscapeCodes(input) {
-      return input.replace(/\x1b\[\d+m/g, '');
+      return input.replace(/\x1b\[\d+m/g, "");
     }
-  
+
     // Log to the file
     const logFilePath = path.join(this.logFolderPath, "app.log");
-  
-    if (this.enableLogToConsoleAndFile) {
-      try {
-        console.log(message);
+    try {
+      await fs.mkdir(this.logFolderPath, { recursive: true });
+      await fs.appendFile(
+        logFilePath,
+        `${currentDate} ${removeAnsiEscapeCodes(message)}\n`,
+        "utf8"
+      );
+    } catch (error) {
+      if (error.code === "ENOENT") {
         await fs.mkdir(this.logFolderPath, { recursive: true });
-        await fs.appendFile(logFilePath, `${currentDate} ${removeAnsiEscapeCodes(message)}\n`, "utf8");
-      } catch (error) {
-        if (error.code === "ENOENT") {
-          await fs.mkdir(this.logFolderPath, { recursive: true });
-          await fs.writeFile(logFilePath, `${removeAnsiEscapeCodes(message)}\n`, "utf8");
-        } else {
-          console.log(
-            `${colors.bright}${colors.fg.red}[Error]:${colors.reset} Failed to save the logs: ${error}`
+        try {
+          await fs.writeFile(
+            logFilePath,
+            `${removeAnsiEscapeCodes(message)}\n`,
+            "utf8"
           );
+        } catch (readError) {
+          this.handleError(`Failed to create log file: ${readError}`);
         }
+      } else {
+        this.handleError(`Failed to save logs: ${error}`);
       }
-    } else {
-      console.log(message);
     }
-  }  
+  }
+
+  handleError(message) {
+    if (this.enableLogToConsoleAndFile) {
+      this.logToConsoleAndFile(
+        `${colors.bright}${colors.fg.red}[Error]:${colors.reset} ${message}`
+      );
+      console.log(
+        `${colors.bright}${colors.fg.red}[Error]:${colors.reset} ${message}`
+      );
+    } else {
+      console.log(
+        `${colors.bright}${colors.fg.red}[Error]:${colors.reset} ${message}`
+      );
+    }
+  }
+
+  logSuccess(message) {
+    if (this.enableLogToConsoleAndFile) {
+      this.logToConsoleAndFile(
+        `${colors.bright}${colors.fg.green}[Successful]:${colors.reset} ${message}`
+      );
+      console.log(
+        `${colors.bright}${colors.fg.green}[Successful]:${colors.reset} ${message}`
+      );
+    } else {
+      console.log(
+        `${colors.bright}${colors.fg.green}[Successful]:${colors.reset} ${message}`
+      );
+    }
+  }
 
   // Encrypt sensitive data
   encrypt(data, secretKey) {
@@ -96,9 +131,7 @@ class jsonverse {
           JSON.stringify(currentData, null, 2),
           "utf8"
         );
-        this.logToConsoleAndFile(
-          `${colors.bright}${colors.fg.green}[Successful]:${colors.reset} Data backup created: ${backupFileName}`
-        );
+        this.logSuccess(`Data backup created: ${backupFileName}`);
       } catch (error) {
         if (error.code === "ENOENT") {
           await fs.mkdir("./Data/Backup", { recursive: true });
@@ -108,26 +141,22 @@ class jsonverse {
               JSON.stringify(currentData, null, 2),
               "utf8"
             );
-            this.logToConsoleAndFile(
-              `${colors.bright}${colors.fg.green}[Successful]:${colors.reset} Data backup created: ${backupFileName}`
-            );
+            this.logSuccess(`Data backup created: ${backupFileName}`);
           } catch (readError) {
-            this.logToConsoleAndFile(
-              `${colors.bright}${colors.fg.red}[Error]:${colors.reset} Failed to create data backup for ${dataName}: ${readError}`
+            this.handleError(
+              `Failed to create data backup for ${dataName}: ${readError}`
             );
             return null;
           }
         } else {
-          this.logToConsoleAndFile(
-            `${colors.bright}${colors.fg.red}[Error]:${colors.reset} Failed to create data backup for ${dataName}: ${error}`
+          this.handleError(
+            `Failed to create data backup for ${dataName}: ${error}`
           );
           return null;
         }
       }
     } else {
-      this.logToConsoleAndFile(
-        `${colors.bright}${colors.fg.red}[Error]:${colors.reset} Failed to create data backup for ${dataName}`
-      );
+      this.handleError(`Failed to create data backup for ${dataName}`);
     }
   }
 
@@ -140,12 +169,10 @@ class jsonverse {
     try {
       const backupData = await fs.readFile(backupFilePath, "utf8");
       await this.writeDataByFileName(dataName, JSON.parse(backupData)); // Replace data in the file
-      this.logToConsoleAndFile(
-        `${colors.bright}${colors.fg.green}[Successful]:${colors.reset} Data restored from backup: ${backupFileName}`
-      );
+      this.logSuccess(`Data restored from backup: ${backupFileName}`);
     } catch (error) {
-      this.logToConsoleAndFile(
-        `${colors.bright}${colors.fg.red}[Error]:${colors.reset} Failed to restore data from backup: ${backupFileName}: ${error}`
+      this.handleError(
+        `Failed to restore data from backup: ${backupFileName}: ${error}`
       );
     }
   }
@@ -175,12 +202,10 @@ class jsonverse {
         );
         try {
           await fs.unlink(backupFilePath);
-          this.logToConsoleAndFile(
-            `${colors.bright}${colors.fg.green}[Successful]:${colors.reset} Backup deleted: ${backupFile}`
-          );
+          this.logSuccess(`Backup deleted: ${backupFile}`);
         } catch (deleteError) {
-          this.logToConsoleAndFile(
-            `${colors.bright}${colors.fg.red}[Error]:${colors.reset} Failed to delete backup: ${backupFile}: ${deleteError}`
+          this.handleError(
+            `Failed to delete backup: ${backupFile}: ${deleteError}`
           );
         }
       }
@@ -217,41 +242,29 @@ class jsonverse {
     try {
       await fs.access(this.dataFolderPath);
     } catch (error) {
-      this.logToConsoleAndFile(
-        `${colors.bright}${colors.fg.red}[Error]:${colors.reset} The path "${this.dataFolderPath}" doesn't exist.`
-      );
+      this.handleError(`The path "${this.dataFolderPath}" doesn't exist.`);
       const answer = await this.askForConfirmation(
-        `${colors.bright}${colors.fg.yellow}[Question]:${colors.reset} Do you want to create the path folder? (Y/N): `
+        `Do you want to create the path folder? (Y/N): `
       );
 
       if (answer.toLowerCase() === "y" || answer.toLowerCase() === "yes") {
         try {
           await fs.mkdir(this.dataFolderPath, { recursive: true });
-          this.logToConsoleAndFile(
-            `${colors.bright}${colors.fg.green}[Successful]:${colors.reset} Path folder created successfully.`
-          );
+          this.logSuccess(`Path folder created successfully.`);
         } catch (error) {
-          this.logToConsoleAndFile(
-            `${colors.bright}${colors.fg.red}[Error]:${colors.reset} Creating path folder: ${error}`
-          );
+          this.handleError(`Creating path folder: ${error}`);
         }
       } else {
-        this.logToConsoleAndFile(
-          `${colors.bright}${colors.fg.red}[Info]:${colors.reset} Path folder not created.`
-        );
+        this.handleError(`Path folder not created.`);
       }
     }
-
-    return this.dataFolderPath;
   }
 
   async initFile(filePath) {
     try {
       await fs.access(filePath);
     } catch (error) {
-      this.logToConsoleAndFile(
-        `${colors.bright}${colors.fg.red}[Error]:${colors.reset} The file "${filePath}" doesn't exist.`
-      );
+      this.handleError(`The file "${filePath}" doesn't exist.`);
       const answer = await this.askForConfirmation(
         `${colors.bright}${colors.fg.yellow}[Question]:${colors.reset} Do you want to create the file? (Y/N): `
       );
@@ -259,18 +272,12 @@ class jsonverse {
       if (answer.toLowerCase() === "y" || answer.toLowerCase() === "yes") {
         try {
           await fs.writeFile(filePath, "[]");
-          this.logToConsoleAndFile(
-            `${colors.bright}${colors.fg.green}[Successful]:${colors.reset} File created successfully.`
-          );
+          this.logSuccess(`File created successfully.`);
         } catch (error) {
-          this.logToConsoleAndFile(
-            `${colors.bright}${colors.fg.red}[Error]:${colors.reset} Creating file: ${error}`
-          );
+          this.handleError(`Creating file: ${error}`);
         }
       } else {
-        this.logToConsoleAndFile(
-          `${colors.bright}${colors.fg.red}[Info]:${colors.reset} File not created.`
-        );
+        this.handleError(`File not created.`);
       }
     }
   }
@@ -303,9 +310,7 @@ class jsonverse {
       // Export as JSON
       const filePath = this.getFilePath(dataName + ".json");
       await fs.writeFile(filePath, JSON.stringify(data, null, 2), "utf8");
-      this.logToConsoleAndFile(
-        `${colors.bright}${colors.fg.green}[Successful]:${colors.reset} Data exported to JSON: ${filePath}`
-      );
+      this.logSuccess(`Data exported to JSON: ${filePath}`);
     } else if (format === "csv") {
       // Export as CSV
       const filePath = this.getFilePath(dataName + ".csv");
@@ -317,9 +322,7 @@ class jsonverse {
       });
       const csvString = await this.convertToCSV(csvData);
       await fs.writeFile(filePath, csvString, "utf8");
-      this.logToConsoleAndFile(
-        `${colors.bright}${colors.fg.green}[Successful]:${colors.reset} Data exported to CSV: ${filePath}`
-      );
+      this.logSuccess(`Data exported to CSV: ${filePath}`);
     }
   }
 
@@ -330,16 +333,12 @@ class jsonverse {
       const rawData = await fs.readFile(filePath, "utf8");
       const newData = JSON.parse(rawData);
       await this.writeDataByFileName(dataName, newData);
-      this.logToConsoleAndFile(
-        `${colors.bright}${colors.fg.green}[Successful]:${colors.reset} Data imported from JSON: ${filePath}`
-      );
+      this.logSuccess(`Data imported from JSON: ${filePath}`);
     } else if (format === "csv") {
       // Import CSV
       const csvData = await this.readCSV(filePath);
       await this.writeDataByFileName(dataName, csvData);
-      this.logToConsoleAndFile(
-        `${colors.bright}${colors.fg.green}[Successful]:${colors.reset} Data imported from CSV: ${filePath}`
-      );
+      this.logSuccess(`Data imported from CSV: ${filePath}`);
     }
   }
 
@@ -348,9 +347,7 @@ class jsonverse {
     const data = await this.readData(dataName);
     const transformedData = data.map(transformFunction);
     await this.writeDataByFileName(dataName, transformedData);
-    this.logToConsoleAndFile(
-      `${colors.bright}${colors.fg.green}[Successful]:${colors.reset} Data transformed and saved.`
-    );
+    this.logSuccess(`Data transformed and saved.`);
   }
 
   // Helper method to convert data to CSV
@@ -387,9 +384,7 @@ class jsonverse {
     } catch (error) {
       if (error.code === "ENOENT") {
         await this.initFile(filePath).catch((initError) => {
-          this.logToConsoleAndFile(
-            `${colors.bright}${colors.fg.red}[Error]:${colors.reset} Initializing file: ${initError}`
-          );
+          this.handleError(`Initializing file: ${initError}`);
         });
         // Retry reading the file
         try {
@@ -399,15 +394,11 @@ class jsonverse {
           }
           return JSON.parse(newData);
         } catch (readError) {
-          this.logToConsoleAndFile(
-            `${colors.bright}${colors.fg.red}[Error]:${colors.reset} Reading file ${filePath}: ${readError}`
-          );
+          this.handleError(`Reading file ${filePath}: ${readError}`);
           return null;
         }
       } else {
-        this.logToConsoleAndFile(
-          `${colors.bright}${colors.fg.red}[Error]:${colors.reset} Reading file ${filePath}: ${error}`
-        );
+        this.handleError(`Reading file ${filePath}: ${error}`);
         return null;
       }
     }
@@ -430,9 +421,7 @@ class jsonverse {
       existingData.push(...newData);
       await fs.writeFile(filePath, JSON.stringify(newData, null, 2), "utf8");
     } catch (error) {
-      this.logToConsoleAndFile(
-        `${colors.bright}${colors.fg.red}[Error]:${colors.reset} Writing to file ${filePath}: ${error}`
-      );
+      this.handleError(`Writing to file ${filePath}: ${error}`);
     }
   }
 
@@ -441,9 +430,7 @@ class jsonverse {
     try {
       await fs.writeFile(filePath, JSON.stringify(newData, null, 2), "utf8");
     } catch (error) {
-      this.logToConsoleAndFile(
-        `${colors.bright}${colors.fg.red}[Error]:${colors.reset} Writing to item with ID: ${filePath}: ${error}`
-      );
+      this.handleError(`Writing to item with ID: ${filePath}: ${error}`);
     }
   }
 
@@ -463,13 +450,9 @@ class jsonverse {
         };
         // Write the updated data back to the file
         await this.writeDataById(id, existingData);
-        this.logToConsoleAndFile(
-          `${colors.bright}${colors.fg.green}[Successful]:${colors.reset} Item with ID ${id} has been edited.`
-        );
+        this.logSuccess(`Item with ID ${id} has been edited.`);
       } else {
-        this.logToConsoleAndFile(
-          `${colors.bright}${colors.fg.red}[Info]:${colors.reset} Item with ID ${id} not found.`
-        );
+        this.handleError(`Item with ID ${id} not found.`);
       }
     }
   }
@@ -488,14 +471,10 @@ class jsonverse {
       existingData.unshift(newDataWithId);
 
       await this.writeDataByFileName(dataName, existingData).then(() => {
-        this.logToConsoleAndFile(
-          `${colors.bright}${colors.fg.green}[Successful]:${colors.reset} New Data added to DB: ${dataName}`
-        );
+        this.logSuccess(`New Data added to DB: ${dataName}`);
       });
     } else {
-      this.logToConsoleAndFile(
-        `${colors.bright}${colors.fg.red}[Error]:${colors.reset} Data failed to be added to the DB: ${dataName}`
-      );
+      this.handleError(`Data failed to be added to the DB: ${dataName}`);
     }
   }
 
@@ -510,29 +489,22 @@ class jsonverse {
         const newData = data.filter((item) => item.id !== id);
         await this.writeDataByFileName(dataName, newData);
 
+        this.logSuccess(`Item has been deleted.`);
         this.logToConsoleAndFile(
-          `${colors.bright}${colors.fg.green}[Successful]:${colors.reset} Item has been deleted.`
-        );
-        this.logToConsoleAndFile(
-          `${colors.bright}${colors.fg.red}[Info]:${colors.reset} Deleted item:`,
+          `${colors.bright}${colors.fg.blue}[Info]:${colors.reset} Deleted item:`,
           dataItemToDelete
         );
 
         if (typeof window == "undefined") {
-          this.logToConsoleAndFile(
-            `${colors.bright}${colors.fg.green}[Successful]:${colors.reset} Item Deleted successfully!`
-          );
+          this.logSuccess(`Item Deleted successfully!`);
         }
       } else {
         this.logToConsoleAndFile(
-          `${colors.bright}${colors.fg.red}[Info]:${colors.reset} Item is already deleted.`
+          `${colors.bright}${colors.fg.blue}[Info]:${colors.reset} Item is already deleted.`
         );
       }
     } catch (error) {
-      this.logToConsoleAndFile(
-        `${colors.bright}${colors.fg.red}[Error]:${colors.reset} Deleting data:`,
-        error
-      );
+      this.handleError(`Deleting data:`, error);
     }
   }
 
