@@ -32,7 +32,7 @@ class jsonverse {
     this.dataFolderPath = dataFolderPath;
     this.logFolderPath = path.join("./Logs");
     this.backupFolderPath = path.join(this.dataFolderPath, "Backup");
-    this.logFilePath = path.join(this.logFolderPath, "app.log");
+    this.logFilePath = path.join(this.logFolderPath, "data.log");
     this.enableLogToConsoleAndFile = activateLogs;
     this.searchIndex = {};
 
