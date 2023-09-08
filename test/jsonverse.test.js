@@ -8,7 +8,11 @@ describe("jsonverse package", () => {
 
   // Helper function to create a new jsonverse instance for testing
   function createJsonverseInstance() {
-    return new jsonverse("./test/data", "./test/logs", true); // Adjust the folder paths as needed
+    return new jsonverse({
+      dataFolderPath: "./test/data", // data directory
+      logFolderPath: "./test/logs", // logs directory
+      activateLogs: true, // to enable the logs set this value to true
+    }); // Adjust the folder paths as needed
   }
 
   before(async () => {
