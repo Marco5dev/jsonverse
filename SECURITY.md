@@ -6,7 +6,7 @@ We are currently supporting the following versions of the `jsonverse` package:
 
 - 1.0.0 to 1.0.13
 - 1.1.0 to 1.1.2
-- 1.2.0 to 1.2.3
+- 1.2.0 to 1.2.4
 
 ## Reporting a Vulnerability
 

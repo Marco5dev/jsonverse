@@ -131,3 +131,7 @@ dist
 
 # Beta
 Beta/
+Docs/
+package-lock.json
+.vscode/
+wiki/

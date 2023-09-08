@@ -28,7 +28,11 @@ const app = express();
 const jsonverse = require("jsonverse");
 
 // Initialize the JSONDatabase instance
-const db = new jsonverse("./path/to/your/data/folder", true); // to activate the logs write after the path true to activate it
+const db = new jsonverse({
+  dataFolderPath: "./MyData", // data directory
+  logFolderPath: "./MyLogs", // logs directory
+  activateLogs: true, // to enable the logs set this value to true
+});
 ```
 
 ### Display All Data
@@ -53,14 +57,13 @@ you can display data from a specific data file by file name
 ```javascript
 app.get("/", async (req, res) => {
   try {
-    db
-      .readData(dataName) // dataName: the name of the json file like test.json the data name will be "test"
-       .then((result) => {
-         res.send(result); // result is the content of the json file
-        })
-        .catch((err) => {
-          console.log(err);
-       });
+    db.readData(dataName) // dataName: the name of the json file like test.json the data name will be "test"
+      .then((result) => {
+        res.send(result); // result is the content of the json file
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   } catch (err) {
     // ... (error handling)
   }

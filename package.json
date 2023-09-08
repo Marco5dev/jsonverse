@@ -4,7 +4,7 @@
   "description": "jsonVerse is a lightweight JSON-based database package for Node.js. It provides a simple interface to store, retrieve, and manage data using JSON files.",
   "main": "index.js",
   "scripts": {
-    "test": "exit 0"
+    "test": "mocha ./test/jsonverse.test.js"
   },
   "repository": {
     "type": "git",
@@ -68,5 +68,10 @@
     "dateformat": "^5.0.3",
     "fuse.js": "^6.6.2",
     "json2csv": "^6.0.0-alpha.2"
+  },
+  "devDependencies": {
+    "chai": "^4.3.8",
+    "mocha": "^10.2.0",
+    "sinon": "^15.2.0"
   }
 }
