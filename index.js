@@ -509,7 +509,7 @@ class jsonverse {
         ...newData,
       };
 
-      existingData.unshift(newDataWithId);
+      existingData.push(newDataWithId); // Append the new data to the existing array
 
       await this.writeDataByFileName(dataName, existingData).then(() => {
         this.logSuccess(`New Data added to DB: ${dataName}`);
