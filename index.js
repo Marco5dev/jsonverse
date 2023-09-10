@@ -500,24 +500,29 @@ class jsonverse {
 
   // Add Data
   async saveData(dataName, newData) {
-    const existingData = await this.readData(dataName);
-    if (existingData !== null) {
+    try {
+      const existingData = await this.readData(dataName) || [];
       const newId = await this.randomID();
-
       const newDataWithId = {
         id: newId,
         ...newData,
       };
-
-      existingData.push(newDataWithId); // Append the new data to the existing array
-
-      await this.writeDataByFileName(dataName, existingData).then(() => {
-        this.logSuccess(`New Data added to DB: ${dataName}`);
-      });
-    } else {
-      this.handleError(`Data failed to be added to the DB: ${dataName}`);
+  
+      // Remove any existing data with the same ID
+      const updatedData = existingData.filter((item) => item.id !== newId);
+  
+      // Add the new data with the same ID
+      updatedData.push(newDataWithId);
+  
+      // Write the updated data to the file
+      await this.writeDataByFileName(dataName, updatedData);
+  
+      this.logSuccess(`Data updated in DB: ${dataName}`);
+    } catch (error) {
+      this.handleError(`Failed to update data in DB: ${dataName}\nError: ${error}`);
     }
   }
+  
 
   async delByID(id) {
     try {
