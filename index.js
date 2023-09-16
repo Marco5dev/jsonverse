@@ -13,6 +13,8 @@ const csv = require("csv-parser");
 const crypto = require("crypto-js");
 const Fuse = require("fuse.js");
 const colors = require("./lib/colors");
+const Schema = require('./lib/Schema');
+
 
 function formatDateTime(date) {
   const year = date.getFullYear();
@@ -46,6 +48,7 @@ class jsonverse {
     this.enableLogToConsoleAndFile = this.options.activateLogs;
     this.searchIndex = {};
     this.cache = {};
+    this.schemas = {};
 
     this.init();
   }
@@ -111,6 +114,36 @@ class jsonverse {
         `${colors.bright}${colors.fg.green}[Successful]:${colors.reset} ${message}`
       );
     }
+  }
+
+  // Add a method to create a model using a schema
+  model(modelName, schema) {
+    // Store the schema definition
+    this.schemas[modelName] = schema;
+
+    // Create a model function
+    const modelFunction = async (data) => {
+      // Validate the data against the schema
+      const schemaDefinition = this.schemas[modelName].schemaDefinition;
+      const keys = Object.keys(schemaDefinition);
+
+      for (const key of keys) {
+        if (
+          schemaDefinition[key] &&
+          schemaDefinition[key].type &&
+          typeof schemaDefinition[key].type === "function"
+        ) {
+          if (!(data[key] instanceof schemaDefinition[key].type)) {
+            throw new Error(`Invalid data type for field: ${key}`);
+          }
+        }
+      }
+
+      // Save the data to the database
+      await this.saveData(modelName, data);
+    };
+
+    return modelFunction;
   }
 
   // Encrypt sensitive data
@@ -501,28 +534,29 @@ class jsonverse {
   // Add Data
   async saveData(dataName, newData) {
     try {
-      const existingData = await this.readData(dataName) || [];
+      const existingData = (await this.readData(dataName)) || [];
       const newId = await this.randomID();
       const newDataWithId = {
         id: newId,
         ...newData,
       };
-  
+
       // Remove any existing data with the same ID
       const updatedData = existingData.filter((item) => item.id !== newId);
-  
+
       // Add the new data with the same ID
       updatedData.push(newDataWithId);
-  
+
       // Write the updated data to the file
       await this.writeDataByFileName(dataName, updatedData);
-  
+
       this.logSuccess(`Data updated in DB: ${dataName}`);
     } catch (error) {
-      this.handleError(`Failed to update data in DB: ${dataName}\nError: ${error}`);
+      this.handleError(
+        `Failed to update data in DB: ${dataName}\nError: ${error}`
+      );
     }
   }
-  
 
   async delByID(id) {
     try {
