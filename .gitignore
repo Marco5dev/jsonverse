@@ -133,3 +133,5 @@ dist
 Beta/
 package-lock.json
 .vscode/
+
+shcemaUsage.js

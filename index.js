@@ -13,8 +13,7 @@ const csv = require("csv-parser");
 const crypto = require("crypto-js");
 const Fuse = require("fuse.js");
 const colors = require("./lib/colors");
-const Schema = require('./lib/Schema');
-
+const model = require("./lib/Model");
 
 function formatDateTime(date) {
   const year = date.getFullYear();
@@ -48,7 +47,9 @@ class jsonverse {
     this.enableLogToConsoleAndFile = this.options.activateLogs;
     this.searchIndex = {};
     this.cache = {};
-    this.schemas = {};
+
+    // Initialize models object
+    this.models = {};
 
     this.init();
   }
@@ -116,34 +117,46 @@ class jsonverse {
     }
   }
 
-  // Add a method to create a model using a schema
-  model(modelName, schema) {
-    // Store the schema definition
-    this.schemas[modelName] = schema;
+  // Add a method to create a model using a model
+  model(modelName, schemaDefinition) {
+    // Create a model instance and store it in the models object
+    this.models[modelName] = new Model(modelName, schemaDefinition);
 
-    // Create a model function
-    const modelFunction = async (data) => {
-      // Validate the data against the schema
-      const schemaDefinition = this.schemas[modelName].schemaDefinition;
-      const keys = Object.keys(schemaDefinition);
+    // Return an object with methods like .find(), .save(), .delete(), and .update()
+    const modelInstance = this.models[modelName];
 
-      for (const key of keys) {
-        if (
-          schemaDefinition[key] &&
-          schemaDefinition[key].type &&
-          typeof schemaDefinition[key].type === "function"
-        ) {
-          if (!(data[key] instanceof schemaDefinition[key].type)) {
-            throw new Error(`Invalid data type for field: ${key}`);
-          }
+    const modelAPI = {
+      find: async (query) => {
+        const result = await this.find(modelName, query);
+        return result;
+      },
+      save: async (data) => {
+        try {
+          await modelInstance.save(data);
+          return Promise.resolve(`${modelName} saved successfully`);
+        } catch (error) {
+          return Promise.reject(error);
         }
-      }
-
-      // Save the data to the database
-      await this.saveData(modelName, data);
+      },
+      delete: async (query) => {
+        try {
+          await modelInstance.delete(query);
+          return Promise.resolve(`${modelName} deleted successfully`);
+        } catch (error) {
+          return Promise.reject(error);
+        }
+      },
+      update: async (query, updates) => {
+        try {
+          await modelInstance.update(query, updates);
+          return Promise.resolve(`${modelName} updated successfully`);
+        } catch (error) {
+          return Promise.reject(error);
+        }
+      },
     };
 
-    return modelFunction;
+    return modelAPI;
   }
 
   // Encrypt sensitive data
