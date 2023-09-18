@@ -1,7 +1,7 @@
 ---
 title: "Deleting Data"
-description: ""
-summary: ""
+description: "To delete data from the jsonverse database, you have a few options:"
+summary: "To delete data from the jsonverse database, you have a few options:"
 date: 2023-09-18T14:48:35+03:00
 lastmod: 2023-09-18T14:48:35+03:00
 draft: false

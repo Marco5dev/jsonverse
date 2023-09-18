@@ -1,7 +1,7 @@
 ---
 title: "Encrypting Sensitive Data"
-description: ""
-summary: ""
+description: "jsonverse allows you to encrypt sensitive data before storing it, ensuring that your data remains confidential and secure. This section explains how to encrypt sensitive data using jsonverse."
+summary: "jsonverse allows you to encrypt sensitive data before storing it, ensuring that your data remains confidential and secure. This section explains how to encrypt sensitive data using jsonverse."
 date: 2023-09-18T15:13:40+03:00
 lastmod: 2023-09-18T15:13:40+03:00
 draft: false

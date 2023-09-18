@@ -1,7 +1,7 @@
 ---
 title: "Importing Data"
-description: ""
-summary: ""
+description: "You can import data into the jsonverse database from external files in JSON or CSV formats. Here's how you can import data:"
+summary: "You can import data into the jsonverse database from external files in JSON or CSV formats. Here's how you can import data:"
 date: 2023-09-18T14:49:06+03:00
 lastmod: 2023-09-18T14:49:06+03:00
 draft: false

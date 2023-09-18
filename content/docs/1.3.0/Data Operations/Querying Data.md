@@ -1,7 +1,7 @@
 ---
 title: "Querying Data"
-description: ""
-summary: ""
+description: "To retrieve data from the jsonverse database, you can use the `find()` method. This method allows you to search for records based on a query. Here's how to use it:"
+summary: "To retrieve data from the jsonverse database, you can use the `find()` method. This method allows you to search for records based on a query. Here's how to use it:"
 date: 2023-09-18T14:48:51+03:00
 lastmod: 2023-09-18T14:48:51+03:00
 draft: false

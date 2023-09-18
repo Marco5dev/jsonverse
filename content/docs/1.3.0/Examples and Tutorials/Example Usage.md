@@ -1,7 +1,7 @@
 ---
 title: "Example Usage"
-description: ""
-summary: ""
+description: "In this section, we'll provide some practical examples of how to use Jsonverse in your applications. These examples will help you understand how to perform common database operations and leverage Jsonverse's features effectively."
+summary: "In this section, we'll provide some practical examples of how to use Jsonverse in your applications. These examples will help you understand how to perform common database operations and leverage Jsonverse's features effectively."
 date: 2023-09-18T15:25:51+03:00
 lastmod: 2023-09-18T15:25:51+03:00
 draft: false

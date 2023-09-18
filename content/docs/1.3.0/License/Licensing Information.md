@@ -1,7 +1,7 @@
 ---
 title: "Licensing Information"
-description: ""
-summary: ""
+description: "Copyright (c) 2023 Mark Maher Ewida"
+summary: "Copyright (c) 2023 Mark Maher Ewida"
 date: 2023-09-18T15:41:09+03:00
 lastmod: 2023-09-18T15:41:09+03:00
 draft: false

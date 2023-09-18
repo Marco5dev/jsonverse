@@ -1,7 +1,7 @@
 ---
 title: "Handling Errors"
-description: ""
-summary: ""
+description: "Error handling is an essential part of developing applications with Jsonverse. Jsonverse provides error-handling mechanisms to help you identify and handle various types of errors that may occur during database operations and other tasks."
+summary: "Error handling is an essential part of developing applications with Jsonverse. Jsonverse provides error-handling mechanisms to help you identify and handle various types of errors that may occur during database operations and other tasks."
 date: 2023-09-18T15:22:58+03:00
 lastmod: 2023-09-18T15:22:58+03:00
 draft: false

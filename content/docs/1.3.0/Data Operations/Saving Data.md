@@ -1,7 +1,7 @@
 ---
 title: "Saving Data"
-description: ""
-summary: ""
+description: "To save data using the `jsonverse` package, you can use the `saveData()` method. This method allows you to persist data to the database."
+summary: "To save data using the `jsonverse` package, you can use the `saveData()` method. This method allows you to persist data to the database."
 date: 2023-09-18T14:48:24+03:00
 lastmod: 2023-09-18T14:48:24+03:00
 draft: false

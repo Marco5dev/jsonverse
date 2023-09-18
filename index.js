@@ -79,15 +79,15 @@ class jsonverse {
             "utf8"
           );
         } catch (readError) {
-          this.handleError(`Failed to create log file: ${readError}`);
+          this.logError(`Failed to create log file: ${readError}`);
         }
       } else {
-        this.handleError(`Failed to save logs: ${error}`);
+        this.logError(`Failed to save logs: ${error}`);
       }
     }
   }
 
-  handleError(message) {
+  logError(message) {
     if (this.enableLogToConsoleAndFile) {
       this.logToConsoleAndFile(
         `${colors.bright}${colors.fg.red}[Error]:${colors.reset} ${message}`
@@ -200,20 +200,20 @@ class jsonverse {
             );
             this.logSuccess(`Data backup created: ${backupFileName}`);
           } catch (readError) {
-            this.handleError(
+            this.logError(
               `Failed to create data backup for ${dataName}: ${readError}`
             );
             return null;
           }
         } else {
-          this.handleError(
+          this.logError(
             `Failed to create data backup for ${dataName}: ${error}`
           );
           return null;
         }
       }
     } else {
-      this.handleError(`Failed to create data backup for ${dataName}`);
+      this.logError(`Failed to create data backup for ${dataName}`);
     }
   }
 
@@ -228,7 +228,7 @@ class jsonverse {
       await this.writeDataByFileName(dataName, JSON.parse(backupData)); // Replace data in the file
       this.logSuccess(`Data restored from backup: ${backupFileName}`);
     } catch (error) {
-      this.handleError(
+      this.logError(
         `Failed to restore data from backup: ${backupFileName}: ${error}`
       );
     }
@@ -261,7 +261,7 @@ class jsonverse {
           await fs.unlink(backupFilePath);
           this.logSuccess(`Backup deleted: ${backupFile}`);
         } catch (deleteError) {
-          this.handleError(
+          this.logError(
             `Failed to delete backup: ${backupFile}: ${deleteError}`
           );
         }
@@ -299,7 +299,7 @@ class jsonverse {
     try {
       await fs.access(this.dataFolderPath);
     } catch (error) {
-      this.handleError(`The path "${this.dataFolderPath}" doesn't exist.`);
+      this.logError(`The path "${this.dataFolderPath}" doesn't exist.`);
       const answer = await this.askForConfirmation(
         `Do you want to create the path folder? (Y/N): `
       );
@@ -309,10 +309,10 @@ class jsonverse {
           await fs.mkdir(this.dataFolderPath, { recursive: true });
           this.logSuccess(`Path folder created successfully.`);
         } catch (error) {
-          this.handleError(`Creating path folder: ${error}`);
+          this.logError(`Creating path folder: ${error}`);
         }
       } else {
-        this.handleError(`Path folder not created.`);
+        this.logError(`Path folder not created.`);
       }
     }
   }
@@ -321,7 +321,7 @@ class jsonverse {
     try {
       await fs.access(filePath);
     } catch (error) {
-      this.handleError(`The file "${filePath}" doesn't exist.`);
+      this.logError(`The file "${filePath}" doesn't exist.`);
       const answer = await this.askForConfirmation(
         `${colors.bright}${colors.fg.yellow}[Question]:${colors.reset} Do you want to create the file? (Y/N): `
       );
@@ -331,10 +331,10 @@ class jsonverse {
           await fs.writeFile(filePath, "[]");
           this.logSuccess(`File created successfully.`);
         } catch (error) {
-          this.handleError(`Creating file: ${error}`);
+          this.logError(`Creating file: ${error}`);
         }
       } else {
-        this.handleError(`File not created.`);
+        this.logError(`File not created.`);
       }
     }
   }
@@ -469,7 +469,7 @@ class jsonverse {
     } catch (error) {
       if (error.code === "ENOENT") {
         await this.initFile(filePath).catch((initError) => {
-          this.handleError(`Initializing file: ${initError}`);
+          this.logError(`Initializing file: ${initError}`);
         });
         // Retry reading the file
         try {
@@ -479,11 +479,11 @@ class jsonverse {
           }
           return JSON.parse(newData);
         } catch (readError) {
-          this.handleError(`Reading file ${filePath}: ${readError}`);
+          this.logError(`Reading file ${filePath}: ${readError}`);
           return null;
         }
       } else {
-        this.handleError(`Reading file ${filePath}: ${error}`);
+        this.logError(`Reading file ${filePath}: ${error}`);
         return null;
       }
     }
@@ -506,7 +506,7 @@ class jsonverse {
       existingData.push(...newData);
       await fs.writeFile(filePath, JSON.stringify(newData, null, 2), "utf8");
     } catch (error) {
-      this.handleError(`Writing to file ${filePath}: ${error}`);
+      this.logError(`Writing to file ${filePath}: ${error}`);
     }
     // Invalidate the cache for this data name
     delete this.cache[dataName];
@@ -517,7 +517,7 @@ class jsonverse {
     try {
       await fs.writeFile(filePath, JSON.stringify(newData, null, 2), "utf8");
     } catch (error) {
-      this.handleError(`Writing to item with ID: ${filePath}: ${error}`);
+      this.logError(`Writing to item with ID: ${filePath}: ${error}`);
     }
   }
 
@@ -539,7 +539,7 @@ class jsonverse {
         await this.writeDataById(id, existingData);
         this.logSuccess(`Item with ID ${id} has been edited.`);
       } else {
-        this.handleError(`Item with ID ${id} not found.`);
+        this.logError(`Item with ID ${id} not found.`);
       }
     }
   }
@@ -565,7 +565,7 @@ class jsonverse {
 
       this.logSuccess(`Data updated in DB: ${dataName}`);
     } catch (error) {
-      this.handleError(
+      this.logError(
         `Failed to update data in DB: ${dataName}\nError: ${error}`
       );
     }
@@ -597,7 +597,7 @@ class jsonverse {
         );
       }
     } catch (error) {
-      this.handleError(`Deleting data:`, error);
+      this.logError(`Deleting data:`, error);
     }
   }
 
@@ -631,7 +631,7 @@ class jsonverse {
         );
       }
     } catch (error) {
-      this.handleError(`Deleting data:`, error);
+      this.logError(`Deleting data:`, error);
     }
   }
 

@@ -1,7 +1,7 @@
 ---
 title: "Creating Data Backups"
-description: ""
-summary: ""
+description: "Creating data backups is essential for preserving your data in case of unexpected data loss or changes. jsonverse provides functionality to create backups of your data and restore them when needed."
+summary: "Creating data backups is essential for preserving your data in case of unexpected data loss or changes. jsonverse provides functionality to create backups of your data and restore them when needed."
 date: 2023-09-18T15:08:15+03:00
 lastmod: 2023-09-18T15:08:15+03:00
 draft: false

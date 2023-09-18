@@ -1,7 +1,7 @@
 ---
 title: "Cleaning Up Old Backups"
-description: ""
-summary: ""
+description: "Regularly cleaning up old backups is essential to manage storage space effectively. jsonverse provides a way to automate the process of removing outdated backup files."
+summary: "Regularly cleaning up old backups is essential to manage storage space effectively. jsonverse provides a way to automate the process of removing outdated backup files."
 date: 2023-09-18T15:08:33+03:00
 lastmod: 2023-09-18T15:08:33+03:00
 draft: false

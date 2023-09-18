@@ -1,7 +1,7 @@
 ---
 title: "Restoring Data From Backups"
-description: ""
-summary: ""
+description: "Restoring data from backups is a crucial process when you need to recover previous versions of your data. jsonverse provides a straightforward way to restore data from your backups."
+summary: "Restoring data from backups is a crucial process when you need to recover previous versions of your data. jsonverse provides a straightforward way to restore data from your backups."
 date: 2023-09-18T15:08:24+03:00
 lastmod: 2023-09-18T15:08:24+03:00
 draft: false

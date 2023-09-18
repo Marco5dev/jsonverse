@@ -1,7 +1,7 @@
 ---
 title: "Contribution Guidelines"
-description: ""
-summary: ""
+description: "Thank you for considering contributing to the `jsonverse` project! Contributions are highly encouraged and welcome."
+summary: "Thank you for considering contributing to the `jsonverse` project! Contributions are highly encouraged and welcome."
 date: 2023-09-18T15:36:15+03:00
 lastmod: 2023-09-18T15:36:15+03:00
 draft: false
@@ -13,8 +13,6 @@ menu:
 weight: 510
 toc: true
 ---
-# Contribution Guidelines
-
 Thank you for considering contributing to the `jsonverse` project! Contributions are highly encouraged and welcome.
 
 To contribute to this project, please follow these guidelines:

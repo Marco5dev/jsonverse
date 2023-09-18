@@ -1,7 +1,7 @@
 ---
 title: "Configuration Options"
-description: ""
-summary: ""
+description: "The `jsonverse` class constructor accepts a configuration object with the following options:"
+summary: "The `jsonverse` class constructor accepts a configuration object with the following options:"
 date: 2023-09-18T15:34:01+03:00
 lastmod: 2023-09-18T15:34:01+03:00
 draft: false

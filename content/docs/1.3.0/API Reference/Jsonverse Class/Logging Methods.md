@@ -26,12 +26,12 @@ jsonverse.logToConsoleAndFile('This is a log message.');
 
 Use this method to log messages that should be displayed in the console and recorded in a log file.
 
-## `handleError(message)` Method
+## `logError(message)` Method
 
-The `handleError(message)` method logs an error message to both the console and the log file.
+The `logError(message)` method logs an error message to both the console and the log file.
 
 ```javascript
-jsonverse.handleError('This is an error message.');
+jsonverse.logError('This is an error message.');
 ```
 
 Use this method to log and handle errors within your jsonverse application.

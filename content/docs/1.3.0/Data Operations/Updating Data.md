@@ -1,7 +1,7 @@
 ---
 title: "Updating Data"
-description: ""
-summary: ""
+description: "To update existing data in the jsonverse database, you can use the `update()` method. This method allows you to modify specific records based on a query. Here's how to use it:"
+summary: "To update existing data in the jsonverse database, you can use the `update()` method. This method allows you to modify specific records based on a query. Here's how to use it:"
 date: 2023-09-18T14:48:43+03:00
 lastmod: 2023-09-18T14:48:43+03:00
 draft: false

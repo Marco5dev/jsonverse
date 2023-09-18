@@ -1,7 +1,7 @@
 ---
 title: "Advanced Usage Scenarios"
-description: ""
-summary: ""
+description: "This guide provides an extensive overview of the many ways you can use Jsonverse in your projects, along with step-by-step explanations."
+summary: "This guide provides an extensive overview of the many ways you can use Jsonverse in your projects, along with step-by-step explanations."
 date: 2023-09-18T15:26:09+03:00
 lastmod: 2023-09-18T15:26:09+03:00
 draft: false

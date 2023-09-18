@@ -1,7 +1,7 @@
 ---
 title: "CSV Data Import and Export"
-description: ""
-summary: ""
+description: "Jsonverse allows you to easily import and export data in CSV (Comma-Separated Values) format. CSV is a widely used format for tabular data and is compatible with various spreadsheet applications and databases."
+summary: "Jsonverse allows you to easily import and export data in CSV (Comma-Separated Values) format. CSV is a widely used format for tabular data and is compatible with various spreadsheet applications and databases."
 date: 2023-09-18T15:19:28+03:00
 lastmod: 2023-09-18T15:19:28+03:00
 draft: false

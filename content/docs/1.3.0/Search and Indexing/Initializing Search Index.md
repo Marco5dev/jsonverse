@@ -1,7 +1,7 @@
 ---
 title: "Initializing Search Index"
-description: ""
-summary: ""
+description: "One of the powerful features of jsonverse is the ability to perform fast and efficient searches on your data. To enable this feature, you need to initialize the search index for your data."
+summary: "One of the powerful features of jsonverse is the ability to perform fast and efficient searches on your data. To enable this feature, you need to initialize the search index for your data."
 date: 2023-09-18T15:16:03+03:00
 lastmod: 2023-09-18T15:16:03+03:00
 draft: false

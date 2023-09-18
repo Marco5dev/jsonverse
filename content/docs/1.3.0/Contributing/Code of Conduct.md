@@ -1,7 +1,7 @@
 ---
 title: "Code of Conduct"
-description: ""
-summary: ""
+description: "This project is committed to fostering a welcoming and inclusive community. We expect all contributors and participants to adhere to the following Code of Conduct:"
+summary: "This project is committed to fostering a welcoming and inclusive community. We expect all contributors and participants to adhere to the following Code of Conduct:"
 date: 2023-09-18T15:36:24+03:00
 lastmod: 2023-09-18T15:36:24+03:00
 draft: false
@@ -13,7 +13,6 @@ menu:
 weight: 520
 toc: true
 ---
-# Code of Conduct
 
 This project is committed to fostering a welcoming and inclusive community. We expect all contributors and participants to adhere to the following Code of Conduct:
 

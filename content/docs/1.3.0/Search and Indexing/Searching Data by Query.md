@@ -1,7 +1,7 @@
 ---
 title: "Searching Data by Query"
-description: ""
-summary: ""
+description: "Once you've initialized the search index for your dataset, you can perform searches on the data based on specific queries. Jsonverse provides powerful search capabilities to help you find the data you need efficiently."
+summary: "Once you've initialized the search index for your dataset, you can perform searches on the data based on specific queries. Jsonverse provides powerful search capabilities to help you find the data you need efficiently."
 date: 2023-09-18T15:16:11+03:00
 lastmod: 2023-09-18T15:16:11+03:00
 draft: false

@@ -1,7 +1,7 @@
 ---
 title: "Initializing Jsonverse"
-description: ""
-summary: ""
+description: "To get started with jsonverse, you need to initialize it in your Node.js application. This section explains how to do that and provides information on configuration options."
+summary: "To get started with jsonverse, you need to initialize it in your Node.js application. This section explains how to do that and provides information on configuration options."
 date: 2023-09-17T22:05:02+03:00
 lastmod: 2023-09-17T22:05:02+03:00
 draft: false
@@ -13,7 +13,6 @@ menu:
 weight: 30
 toc: true
 ---
-
 
 To get started with jsonverse, you need to initialize it in your Node.js application. This section explains how to do that and provides information on configuration options.
 

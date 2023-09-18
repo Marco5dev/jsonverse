@@ -1,7 +1,7 @@
 ---
 title: "Exporting Data"
-description: ""
-summary: ""
+description: "Exporting data from the jsonverse database allows you to save your data in various formats, such as JSON and CSV. Here's how you can export your data:"
+summary: "Exporting data from the jsonverse database allows you to save your data in various formats, such as JSON and CSV. Here's how you can export your data:"
 date: 2023-09-18T14:48:59+03:00
 lastmod: 2023-09-18T14:48:59+03:00
 draft: false

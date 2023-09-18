@@ -1,7 +1,7 @@
 ---
 title: "File and Folder Initialization"
-description: ""
-summary: ""
+description: "Before you start working with data in Jsonverse, it's essential to ensure that the required files and folders are properly set up. This includes creating data folders, initializing data files, and handling potential errors."
+summary: "Before you start working with data in Jsonverse, it's essential to ensure that the required files and folders are properly set up. This includes creating data folders, initializing data files, and handling potential errors."
 date: 2023-09-18T15:19:19+03:00
 lastmod: 2023-09-18T15:19:19+03:00
 draft: false

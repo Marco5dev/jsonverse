@@ -1,7 +1,7 @@
 ---
 title: "Decrypting Sensitive Data"
-description: ""
-summary: ""
+description: "In the previous section, we discussed how to encrypt sensitive data using jsonverse. Now, let's explore how to decrypt this data when needed."
+summary: "In the previous section, we discussed how to encrypt sensitive data using jsonverse. Now, let's explore how to decrypt this data when needed."
 date: 2023-09-18T15:14:20+03:00
 lastmod: 2023-09-18T15:14:20+03:00
 draft: false

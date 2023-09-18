@@ -1,7 +1,7 @@
 ---
 title: "Data Model Creation"
-description: ""
-summary: ""
+description: "In Jsonverse, you define your data models using schemas. A schema defines the structure and validation rules for the data that your model will work with. To create a data model, you'll need to follow these steps:"
+summary: "In Jsonverse, you define your data models using schemas. A schema defines the structure and validation rules for the data that your model will work with. To create a data model, you'll need to follow these steps:"
 date: 2023-09-18T15:26:00+03:00
 lastmod: 2023-09-18T15:26:00+03:00
 draft: false
