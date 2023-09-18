@@ -13,7 +13,6 @@ const csv = require("csv-parser");
 const crypto = require("crypto-js");
 const Fuse = require("fuse.js");
 const colors = require("./lib/colors");
-const model = require("./lib/Model");
 
 function formatDateTime(date) {
   const year = date.getFullYear();
@@ -47,9 +46,6 @@ class jsonverse {
     this.enableLogToConsoleAndFile = this.options.activateLogs;
     this.searchIndex = {};
     this.cache = {};
-
-    // Initialize models object
-    this.models = {};
 
     this.init();
   }
@@ -117,47 +113,7 @@ class jsonverse {
     }
   }
 
-  // Add a method to create a model using a model
-  model(modelName, schemaDefinition) {
-    // Create a model instance and store it in the models object
-    this.models[modelName] = new Model(modelName, schemaDefinition);
 
-    // Return an object with methods like .find(), .save(), .delete(), and .update()
-    const modelInstance = this.models[modelName];
-
-    const modelAPI = {
-      find: async (query) => {
-        const result = await this.find(modelName, query);
-        return result;
-      },
-      save: async (data) => {
-        try {
-          await modelInstance.save(data);
-          return Promise.resolve(`${modelName} saved successfully`);
-        } catch (error) {
-          return Promise.reject(error);
-        }
-      },
-      delete: async (query) => {
-        try {
-          await modelInstance.delete(query);
-          return Promise.resolve(`${modelName} deleted successfully`);
-        } catch (error) {
-          return Promise.reject(error);
-        }
-      },
-      update: async (query, updates) => {
-        try {
-          await modelInstance.update(query, updates);
-          return Promise.resolve(`${modelName} updated successfully`);
-        } catch (error) {
-          return Promise.reject(error);
-        }
-      },
-    };
-
-    return modelAPI;
-  }
 
   // Encrypt sensitive data
   encrypt(data, secretKey) {
