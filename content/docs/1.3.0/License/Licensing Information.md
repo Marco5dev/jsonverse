@@ -1,3 +1,18 @@
+---
+title: "Licensing Information"
+description: ""
+summary: ""
+date: 2023-09-18T15:41:09+03:00
+lastmod: 2023-09-18T15:41:09+03:00
+draft: false
+images: []
+menu:
+  docs:
+    parent: ""
+    identifier: "Licensing Information-c9bab410a4a3de52fdf02dcb28e66a87"
+weight: 999
+toc: true
+---
 MIT License
 
 Copyright (c) 2023 Mark Maher Ewida
