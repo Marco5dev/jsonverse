@@ -13,6 +13,7 @@ const csv = require("csv-parser");
 const crypto = require("crypto-js");
 const Fuse = require("fuse.js");
 const colors = require("./lib/colors");
+const XLSX = require("xlsx");
 
 function formatDateTime(date) {
   const year = date.getFullYear();
@@ -112,8 +113,6 @@ class jsonverse {
       );
     }
   }
-
-
 
   // Encrypt sensitive data
   encrypt(data, secretKey) {
@@ -352,6 +351,15 @@ class jsonverse {
       const csvData = await this.readCSV(filePath);
       await this.writeDataByFileName(dataName, csvData);
       this.logSuccess(`Data imported from CSV: ${filePath}`);
+    } else if (fileExtension === ".xlsx" || ".xls") {
+      // Import XLSX data
+      const xlsData = await fs.promises.readFile(filePath);
+      const newData = this.xlsToJSON(xlsData);
+      await this.writeDataByFileName(dataName, newData);
+      this.logSuccess(`Data imported from XLSX: ${filePath}`);
+    } else {
+      // Handle unsupported file format
+      this.logError(`Unsupported file format: ${fileExtension}`);
     }
   }
 
@@ -380,6 +388,32 @@ class jsonverse {
         .on("end", () => resolve(results))
         .on("error", (error) => reject(error));
     });
+  }
+
+  // Function to read data from an XLSX file
+  async readXLSX(filePath) {
+    try {
+      const xlsData = await fs.promises.readFile(filePath);
+      const parsedData = this.xlsToJSON(xlsData);
+      return parsedData;
+    } catch (error) {
+      this.logError(`Reading XLSX file: ${error}`);
+      return null;
+    }
+  }
+
+  async jsonToXLS(data, sheetName = "Sheet1") {
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, sheetName);
+    return XLSX.write(wb, { bookType: "xlsx", type: "buffer" });
+  }
+
+  // Function to convert XLS data to JSON
+  async xlsToJSON(xlsData) {
+    const wb = XLSX.read(xlsData, { type: "buffer" });
+    const ws = wb.Sheets[wb.SheetNames[0]]; // Assuming there's only one sheet
+    return XLSX.utils.sheet_to_json(ws);
   }
 
   isCacheExpired(dataName) {
