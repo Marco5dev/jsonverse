@@ -16,7 +16,7 @@ toc: true
 
 Data backup and restore are crucial operations to ensure data integrity and disaster recovery in jsonverse. This section explains how to create data backups and restore data from backups.
 
-1. **Create Data Backup**:
+## 1. **Create Data Backup**:
 
    To create a data backup, you can use the `backupCreate` method of the jsonverse instance. Here's an example:
 
@@ -35,7 +35,7 @@ Data backup and restore are crucial operations to ensure data integrity and disa
 
    This code creates a backup of the data associated with the specified `dataName`.
 
-2. **Restore Data from Backup**:
+## 2. **Restore Data from Backup**:
 
    To restore data from a backup, you can use the `backupRestore` method of the jsonverse instance. Here's an example:
 
@@ -55,21 +55,21 @@ Data backup and restore are crucial operations to ensure data integrity and disa
 
    This code restores data from the specified backup file.
 
-3. **Data Backup Cleanup**:
+## 3. **Data Backup Cleanup**:
 
    To manage disk space and keep only necessary backups, you can implement a backup cleanup process. This process can be automated to delete old backups based on your retention policy.
 
-4. **Backup File Naming Convention**:
+## 4. **Backup File Naming Convention**:
 
    It's a good practice to follow a consistent naming convention for backup files. In the example above, the backup file name includes the data name and a timestamp to identify the backup's contents and creation time.
 
    - Example Backup File Name: `myData_20230101120000.json`
 
-5. **Backup Frequency**:
+## 5. **Backup Frequency**:
 
    Determine how often you need to create backups based on your data's criticality and update frequency. Common backup frequencies include daily, weekly, or even real-time backups for mission-critical data.
 
-6. **Backup Location**:
+## 6. **Backup Location**:
 
    Store backups in a secure location, separate from your primary data. Cloud storage and off-site backups provide additional protection against data loss.
 

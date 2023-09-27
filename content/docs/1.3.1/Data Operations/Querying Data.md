@@ -16,7 +16,7 @@ toc: true
 
 To retrieve data from the jsonverse database, you can use the `find()` method. This method allows you to search for records based on a query. Here's how to use it:
 
-1. **Basic Query:**
+## 1. **Basic Query:**
 
    You can retrieve data by specifying a query that filters the records you want to fetch. Here's an example:
 
@@ -40,7 +40,7 @@ To retrieve data from the jsonverse database, you can use the `find()` method. T
    
    Replace "yourDataName" with the actual data name, customize the query to match your criteria, and retrieve the matching data.
 
-2. **Query by ID:**
+## 2. **Query by ID:**
 
    If you know the unique ID of the record you want to retrieve, you can use the following code:
 
@@ -64,7 +64,7 @@ To retrieve data from the jsonverse database, you can use the `find()` method. T
    
    Make sure to replace "yourDataName" and "yourIDToFind" with your actual data name and the ID of the record you want to retrieve.
 
-3. **Query All Data:**
+## 3. **Query All Data:**
 
    To retrieve all data within a specific data name, you can use the following code:
 

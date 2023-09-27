@@ -16,7 +16,7 @@ toc: true
 
 To update existing data in the jsonverse database, you can use the `update()` method. This method allows you to modify specific records based on a query. Here's how to use it:
 
-1. **Update by Query:**
+## 1. **Update by Query:**
 
    You can update data by specifying a query that filters the records you want to modify. Here's an example:
 
@@ -43,7 +43,7 @@ To update existing data in the jsonverse database, you can use the `update()` me
    
    Replace "yourDataName" with the actual data name, customize the query to match your criteria, and specify the updates you want to apply.
 
-2. **Update by ID:**
+## 2. **Update by ID:**
 
    If you know the unique ID of the record you want to update, you can use the following code:
 
@@ -70,7 +70,7 @@ To update existing data in the jsonverse database, you can use the `update()` me
    
    Make sure to replace "yourDataName," "yourIDToUpdate," and specify the updates you want to apply.
 
-3. **Update All Data:**
+## 3. **Update All Data:**
 
    To update all data within a specific data name, you can use the following code:
 

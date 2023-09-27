@@ -16,7 +16,7 @@ toc: true
 
 To delete data from the jsonverse database, you have a few options:
 
-1. **Delete by ID:**
+## 1. **Delete by ID:**
 
    You can delete data by specifying its unique ID. Here's how to do it:
 
@@ -39,7 +39,7 @@ To delete data from the jsonverse database, you have a few options:
    ```
    Make sure to replace "yourDataName" and "yourIDToDelete" with the actual data name and ID you want to delete.
 
-2. **Delete by Query:**
+## 2. **Delete by Query:**
 
    You can also delete data based on a query. Here's an example:
 
@@ -62,7 +62,7 @@ To delete data from the jsonverse database, you have a few options:
    ```
    Replace "yourDataName" with the actual data name and customize the query to match your criteria.
 
-3. **Delete All Data:**
+## 3. **Delete All Data:**
 
    To delete all data within a specific data name, you can use the following code:
 

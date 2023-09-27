@@ -16,7 +16,7 @@ toc: true
 
 Exporting data from the jsonverse database allows you to save your data in various formats, such as JSON and CSV. Here's how you can export your data:
 
-1. **Export as JSON:**
+## 1. **Export as JSON:**
 
    You can export your data as a JSON file using the following code:
 
@@ -40,7 +40,7 @@ Exporting data from the jsonverse database allows you to save your data in vario
 
    This code will export your data as a JSON file named after your data name.
 
-2. **Export as CSV:**
+## 2. **Export as CSV:**
 
    To export your data as a CSV file, you can use the following code:
 

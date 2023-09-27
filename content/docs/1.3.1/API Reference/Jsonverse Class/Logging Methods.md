@@ -16,7 +16,7 @@ toc: true
 
 The `jsonverse` class provides methods for logging messages to both the console and log files.
 
-## `logToConsoleAndFile(message)` Method
+## logToConsoleAndFile(message) Method
 
 The `logToConsoleAndFile(message)` method logs a message to both the console and the log file.
 
@@ -26,7 +26,7 @@ jsonverse.logToConsoleAndFile('This is a log message.');
 
 Use this method to log messages that should be displayed in the console and recorded in a log file.
 
-## `logError(message)` Method
+## logError(message) Method
 
 The `logError(message)` method logs an error message to both the console and the log file.
 

@@ -16,7 +16,7 @@ toc: true
 
 You can import data into the jsonverse database from external files in JSON or CSV formats. Here's how you can import data:
 
-1. **Import from JSON:**
+## 1. **Import from JSON:**
 
    To import data from a JSON file, you can use the following code:
 
@@ -43,7 +43,7 @@ You can import data into the jsonverse database from external files in JSON or C
 
    This code will import data from the specified JSON file into your data.
 
-2. **Import from CSV:**
+## 2. **Import from CSV:**
 
    To import data from a CSV file, you can use the following code:
 
