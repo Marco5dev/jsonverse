@@ -2,6 +2,7 @@
 .git/
 .github
 .github/
-Docs/
-test/
 content/
+node_modules
+package-lock.json
+.vscode
