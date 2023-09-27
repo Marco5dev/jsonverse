@@ -13,7 +13,8 @@ const csv = require("csv-parser");
 const crypto = require("crypto-js");
 const Fuse = require("fuse.js");
 const colors = require("./lib/colors");
-const XLSX = require("xlsx");
+const ExcelJS = require("exceljs");
+const json2xls = require("json2xls");
 
 function formatDateTime(date) {
   const year = date.getFullYear();
@@ -335,6 +336,10 @@ class jsonverse {
       const csvString = await this.convertToCSV(csvData);
       await fs.writeFile(filePath, csvString, "utf8");
       this.logSuccess(`Data exported to CSV: ${filePath}`);
+    } else if (format === "xlsx") {
+      // Export as XLSX using exceljs
+      const filePath = this.getFilePath(dataName + ".xlsx");
+      await this.writeDataToXLSX(filePath, data);
     }
   }
 
@@ -351,15 +356,14 @@ class jsonverse {
       const csvData = await this.readCSV(filePath);
       await this.writeDataByFileName(dataName, csvData);
       this.logSuccess(`Data imported from CSV: ${filePath}`);
-    } else if (fileExtension === ".xlsx" || ".xls") {
-      // Import XLSX data
-      const xlsData = await fs.promises.readFile(filePath);
-      const newData = this.xlsToJSON(xlsData);
-      await this.writeDataByFileName(dataName, newData);
+    } else if (format === "xlsx") {
+      // Import XLSX data using exceljs
+      const xlsxData = await this.readXLSX(filePath);
+      await this.writeDataByFileName(dataName, xlsxData);
       this.logSuccess(`Data imported from XLSX: ${filePath}`);
     } else {
       // Handle unsupported file format
-      this.logError(`Unsupported file format: ${fileExtension}`);
+      this.logError(`Unsupported file format: ${format}`);
     }
   }
 
@@ -390,23 +394,71 @@ class jsonverse {
     });
   }
 
-  // Function to read data from an XLSX file
+  // Function to read data from an XLSX file using exceljs
   async readXLSX(filePath) {
     try {
-      const xlsData = await fs.promises.readFile(filePath);
-      const parsedData = this.xlsToJSON(xlsData);
-      return parsedData;
+      const workbook = new ExcelJS.Workbook();
+      await workbook.xlsx.readFile(filePath);
+      const worksheet = workbook.getWorksheet(1); // Assuming there's only one sheet
+
+      const data = [];
+      worksheet.eachRow((row, rowNumber) => {
+        if (rowNumber !== 1) {
+          const rowData = row.values.map((cell) => cell);
+          data.push(rowData);
+        }
+      });
+
+      return data;
     } catch (error) {
       this.logError(`Reading XLSX file: ${error}`);
       return null;
     }
   }
 
-  async jsonToXLS(data, sheetName = "Sheet1") {
-    const ws = XLSX.utils.json_to_sheet(data);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, sheetName);
-    return XLSX.write(wb, { bookType: "xlsx", type: "buffer" });
+  // Helper method to write data to an XLSX file using exceljs
+  async writeDataToXLSX(filePath, data) {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Sheet1");
+
+    // Add headers to the worksheet
+    if (data.length > 0) {
+      const headers = Object.keys(data[0]);
+      worksheet.addRow(headers);
+    }
+
+    // Add data rows to the worksheet
+    data.forEach((row) => {
+      worksheet.addRow(Object.values(row));
+    });
+
+    await workbook.xlsx.writeFile(filePath);
+    this.logSuccess(`Data exported to XLSX: ${filePath}`);
+  }
+
+  // Export Data to XLSX
+  async exportDataToXLSX(dataName) {
+    const data = await this.readData(dataName);
+
+    // Check if the data is empty
+    if (data.length === 0) {
+      this.logError(`No data to export in ${dataName}.`);
+      return;
+    }
+
+    // Create an XLSX object from the JSON data
+    const xls = json2xls(data);
+
+    // Specify the file path where the XLSX file will be saved
+    const filePath = this.getFilePath(dataName + ".xlsx");
+
+    try {
+      // Save the XLSX data to the file
+      fs.writeFileSync(filePath, xls, "binary");
+      this.logSuccess(`Data exported to XLSX: ${filePath}`);
+    } catch (error) {
+      this.logError(`Failed to export data to XLSX: ${error}`);
+    }
   }
 
   // Function to convert XLS data to JSON
