@@ -17,7 +17,7 @@ jobs:
         with:
           node-version: 16
       - run: npm i
-      - run: npm test
+      - run: npm run test:jsonverse && npm run test:schema
 
   publish-npm:
     needs: build
