@@ -89,7 +89,7 @@ describe("jsonverse Model", () => {
         id: "user2", // Unique ID for user 2
         name: "User 2",
         email: "user2@example.com",
-      },
+      }
     ];
 
     for (const user of users) {
