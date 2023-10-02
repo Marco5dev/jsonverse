@@ -1,5 +1,5 @@
 const { expect } = require("chai");
-const jsonverse = require("../index"); // Import the jsonverse module
+const { jsonverse } = require("../index"); // Import the jsonverse module
 const fs = require("fs").promises;
 const path = require("path");
 
