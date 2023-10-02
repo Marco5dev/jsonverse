@@ -21,7 +21,7 @@ jobs:
           node-version: 18
 
       - name: Install Dependencies
-        run: npm install
+        run: npm i
 
   Test:
     needs: Build
@@ -36,4 +36,5 @@ jobs:
           node-version: 18
 
       - name: Run Tests
+        run: npm i
         run: npm run test
