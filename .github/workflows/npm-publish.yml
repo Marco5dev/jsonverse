@@ -1,9 +1,5 @@
-name: Node.js Package NPM
+name: Publish the package to NPM
 
-# on:
-#   push:
-#     paths:
-#       - 'package.json'
 on:
   release:
     types:

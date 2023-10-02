@@ -1,6 +1,6 @@
 {
   "name": "jsonverse",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "description": "jsonVerse is a lightweight JSON-based database package for Node.js. It provides a simple interface to store, retrieve, and manage data using JSON files.",
   "main": "index.js",
   "scripts": {
@@ -22,7 +22,7 @@
     "lib/",
     "SECURITY.md"
   ],
-  "homepage": "https://github.com/Marco5dev/jsonverse#readme",
+  "homepage": "https://jsonversedb.web.app",
   "keywords": [
     "JSON",
     "database",
@@ -66,8 +66,10 @@
     "crypto-js": "^4.1.1",
     "csv-parser": "^3.0.0",
     "dateformat": "^5.0.3",
+    "exceljs": "^4.3.0",
     "fuse.js": "^6.6.2",
-    "json2csv": "^6.0.0-alpha.2"
+    "json2csv": "^6.0.0-alpha.2",
+    "json2xls": "^0.1.2"
   },
   "devDependencies": {
     "chai": "^4.3.8",

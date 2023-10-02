@@ -2,7 +2,13 @@
 
 jsonVerse is a lightweight JSON-based database package for Node.js. It provides a simple interface to store, retrieve, and manage data using JSON files.
 
-[![Node.js Package NPM](https://github.com/Marco5dev/jsonverse/actions/workflows/npm-publish.yml/badge.svg)](https://github.com/Marco5dev/jsonverse/actions/workflows/npm-publish.yml)
+[![Build](https://github.com/Marco5dev/jsonverse/actions/workflows/npm-publish.yml/badge.svg)](https://github.com/Marco5dev/jsonverse/actions/workflows/npm-publish.yml)
+[![NPM Version](https://img.shields.io/npm/v/jsonverse.svg)](https://www.npmjs.com/package/jsonverse)
+[![NPM Downloads](https://img.shields.io/npm/dt/jsonverse.svg)](https://www.npmjs.com/package/jsonverse)
+[![Github Repo Size](https://img.shields.io/github/repo-size/Marco5dev/jsonverse.svg)](https://github.com/Marco5dev/jsonverse)
+[![LICENSE](https://img.shields.io/npm/l/jsonverse.svg)](https://github.com/Marco5dev/jsonverse/blob/master/LICENSE)
+[![Contributors](https://img.shields.io/github/contributors/Marco5dev/jsonverse.svg)](https://github.com/Marco5dev/jsonverse/graphs/contributors)
+[![Commit](https://img.shields.io/github/last-commit/Marco5dev/jsonverse.svg)](https://github.com/Marco5dev/jsonverse/commits/master)
 
 ## Introduction
 
