@@ -79,13 +79,36 @@ describe("jsonverse package", () => {
     expect(afterDelete === "[]"); // Expect an empty array
   });
   after(async () => {
-    // After all tests, delete the data and logs folders if they exist
+    // Delete test data and logs folders after all tests have run
+    const testDataPath = path.join(__dirname, "data");
+    const testLogsPath = path.join(__dirname, "logs");
+
     try {
-      await fs.rm("./test/data", { recursive: true, force: true });
-      await fs.rm("./test/logs", { recursive: true, force: true });
+      // Function to delete a folder recursively
+      function deleteFolderRecursive(folderPath) {
+        if (fs.existsSync(folderPath)) {
+          fs.readdirSync(folderPath).forEach((file) => {
+            const curPath = path.join(folderPath, file);
+            if (fs.lstatSync(curPath).isDirectory()) {
+              // Recurse into subfolder
+              deleteFolderRecursive(curPath);
+            } else {
+              // Delete file
+              fs.unlinkSync(curPath);
+            }
+          });
+          // Delete the empty folder
+          fs.rmdirSync(folderPath);
+        }
+      }
+
+      // Remove the test data folder and its contents
+      deleteFolderRecursive(testDataPath);
+
+      // Remove the test logs folder and its contents
+      deleteFolderRecursive(testLogsPath);
     } catch (error) {
-      // Handle any errors if the folders couldn't be deleted
-      console.error(`Error deleting folders: ${error}`);
+      console.error("Error deleting test folders:", error);
     }
   });
 });

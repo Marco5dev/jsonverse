@@ -1,20 +1,23 @@
 /*!
  *
- * Copyright(c) 2023 Mark Maher Ewida
+ * Copyright(c) 2023 Mark Maher Ewida(Marco5dev)
  * MIT Licensed
  */
 
 "use strict";
 
+// ! NPM Packages
 const fs = require("fs").promises;
 const path = require("path");
 const { randomUUID } = require("crypto");
 const csv = require("csv-parser");
 const crypto = require("crypto-js");
 const Fuse = require("fuse.js");
-const colors = require("./lib/colors");
 const ExcelJS = require("exceljs");
 const json2xls = require("json2xls");
+// ! Lib files
+const colors = require("./lib/colors");
+const Schema = require("./lib/schema");
 
 function formatDateTime(date) {
   const year = date.getFullYear();
@@ -27,18 +30,18 @@ function formatDateTime(date) {
 }
 
 const currentDate = formatDateTime(new Date());
-const currentTime = currentDate.replace(/\D/g, ""); // Remove non-numeric characters
+const currentTime = currentDate.replace(/\D/g, ""); // *Remove non-numeric characters
 
 class jsonverse {
   constructor(options) {
-    // Default configuration options
+    // * Default configuration options
     const defaultOptions = {
       dataFolderPath: "./Data",
       logFolderPath: "./Logs",
       activateLogs: true,
     };
 
-    // Merge the default options with the provided options
+    // * Merge the default options with the provided options
     this.options = { ...defaultOptions, ...options };
 
     this.dataFolderPath = this.options.dataFolderPath;
@@ -48,17 +51,18 @@ class jsonverse {
     this.enableLogToConsoleAndFile = this.options.activateLogs;
     this.searchIndex = {};
     this.cache = {};
+    this.data = {};
 
     this.init();
   }
 
   async logToConsoleAndFile(message) {
-    // Function to remove ANSI escape codes from a string
+    // *Function to remove ANSI escape codes from a string
     function removeAnsiEscapeCodes(input) {
       return input.replace(/\x1b\[\d+m/g, "");
     }
 
-    // Log to the file
+    // *TODO: Log to the file
     const logFilePath = path.join(this.logFolderPath, "app.log");
     try {
       await fs.mkdir(this.logFolderPath, { recursive: true });
@@ -115,7 +119,37 @@ class jsonverse {
     }
   }
 
-  // Encrypt sensitive data
+  logWarning(message) {
+    if (this.enableLogToConsoleAndFile) {
+      this.logToConsoleAndFile(
+        `${colors.bright}${colors.fg.yellow}[Warning]:${colors.reset} ${message}`
+      );
+      console.log(
+        `${colors.bright}${colors.fg.yellow}[Warning]:${colors.reset} ${message}`
+      );
+    } else {
+      console.log(
+        `${colors.bright}${colors.fg.yellow}[Warning]:${colors.reset} ${message}`
+      );
+    }
+  }
+
+  logInfo(message) {
+    if (this.enableLogToConsoleAndFile) {
+      this.logToConsoleAndFile(
+        `${colors.bright}${colors.fg.blue}[Info]:${colors.reset} ${message}`
+      );
+      console.log(
+        `${colors.bright}${colors.fg.blue}[Info]:${colors.reset} ${message}`
+      );
+    } else {
+      console.log(
+        `${colors.bright}${colors.fg.blue}[Info]:${colors.reset} ${message}`
+      );
+    }
+  }
+
+  // TODO: Encrypt sensitive data
   encrypt(data, secretKey) {
     const encryptedData = crypto.AES.encrypt(
       JSON.stringify(data),
@@ -124,7 +158,7 @@ class jsonverse {
     return encryptedData;
   }
 
-  // Decrypt sensitive data
+  // TODO: Decrypt sensitive data
   decrypt(encryptedData, secretKey) {
     const decryptedData = crypto.AES.decrypt(encryptedData, secretKey).toString(
       crypto.enc.Utf8
@@ -132,7 +166,7 @@ class jsonverse {
     return JSON.parse(decryptedData);
   }
 
-  // Create Data Backup
+  // TODO: Create Data Backup
   async backupCreate(dataName) {
     const currentData = await this.readData(dataName);
     if (currentData !== null) {
@@ -173,7 +207,7 @@ class jsonverse {
     }
   }
 
-  // Restore Data from Backup
+  // TODO: Restore Data from Backup
   async backupRestore(dataName, backupFileName) {
     const backupFilePath = path.join(
       this.dataFolderPath + "/Backup",
@@ -181,7 +215,7 @@ class jsonverse {
     );
     try {
       const backupData = await fs.readFile(backupFilePath, "utf8");
-      await this.writeDataByFileName(dataName, JSON.parse(backupData)); // Replace data in the file
+      await this.writeDataByFileName(dataName, JSON.parse(backupData)); // * Replace data in the file
       this.logSuccess(`Data restored from backup: ${backupFileName}`);
     } catch (error) {
       this.logError(
@@ -190,7 +224,7 @@ class jsonverse {
     }
   }
 
-  // Cleanup Old Backups
+  // TODO: Cleanup Old Backups
   async backupDelete(dataName, retentionDays) {
     const backupFiles = await this.getBackupFiles(dataName);
     const currentDate = new Date(currentTime);
@@ -200,7 +234,7 @@ class jsonverse {
         .split(dataName + "_")[1]
         .split(".json")[0];
       const year = parseInt(backupDateStr.slice(0, 4));
-      const month = parseInt(backupDateStr.slice(4, 6)) - 1; // Months are 0-indexed
+      const month = parseInt(backupDateStr.slice(4, 6)) - 1; // * Months are 0-indexed
       const day = parseInt(backupDateStr.slice(6, 8));
       const hour = parseInt(backupDateStr.slice(8, 10));
       const minute = parseInt(backupDateStr.slice(10, 12));
@@ -225,14 +259,14 @@ class jsonverse {
     }
   }
 
-  // Get Backup Files
+  // TODO: Get Backup Files
   async getBackupFiles(dataName) {
     const files = await fs.readdir(this.dataFolderPath + "/Backup");
     const backupFiles = files.filter((file) => file.startsWith(`${dataName}_`));
     return backupFiles;
   }
 
-  // Initialize search index for a dataName
+  // TODO: Initialize search index for a dataName
   initSearchIndex(dataName, options) {
     const data = this.readData(dataName);
     if (data !== null) {
@@ -241,7 +275,7 @@ class jsonverse {
     }
   }
 
-  // Search data by query
+  // TODO: Search data by query
   searchData(dataName, query) {
     if (this.searchIndex[dataName]) {
       const fuse = this.searchIndex[dataName];
@@ -255,20 +289,13 @@ class jsonverse {
     try {
       await fs.access(this.dataFolderPath);
     } catch (error) {
-      this.logError(`The path "${this.dataFolderPath}" doesn't exist.`);
-      const answer = await this.askForConfirmation(
-        `Do you want to create the path folder? (Y/N): `
-      );
+      this.logInfo(`The path "${this.dataFolderPath}" doesn't exist.`);
 
-      if (answer.toLowerCase() === "y" || answer.toLowerCase() === "yes") {
-        try {
-          await fs.mkdir(this.dataFolderPath, { recursive: true });
-          this.logSuccess(`Path folder created successfully.`);
-        } catch (error) {
-          this.logError(`Creating path folder: ${error}`);
-        }
-      } else {
-        this.logError(`Path folder not created.`);
+      try {
+        await fs.mkdir(this.dataFolderPath, { recursive: true });
+        this.logSuccess(`Path folder created successfully.`);
+      } catch (error) {
+        this.logError(`Creating path folder: ${error}`);
       }
     }
   }
@@ -277,36 +304,15 @@ class jsonverse {
     try {
       await fs.access(filePath);
     } catch (error) {
-      this.logError(`The file "${filePath}" doesn't exist.`);
-      const answer = await this.askForConfirmation(
-        `${colors.bright}${colors.fg.yellow}[Question]:${colors.reset} Do you want to create the file? (Y/N): `
-      );
+      this.logInfo(`The file "${filePath}" doesn't exist.`);
 
-      if (answer.toLowerCase() === "y" || answer.toLowerCase() === "yes") {
-        try {
-          await fs.writeFile(filePath, "[]");
-          this.logSuccess(`File created successfully.`);
-        } catch (error) {
-          this.logError(`Creating file: ${error}`);
-        }
-      } else {
-        this.logError(`File not created.`);
+      try {
+        await fs.writeFile(filePath, "[]");
+        this.logSuccess(`File created successfully.`);
+      } catch (error) {
+        this.logError(`Creating file: ${error}`);
       }
     }
-  }
-
-  async askForConfirmation(question) {
-    return new Promise((resolve) => {
-      const readline = require("readline").createInterface({
-        input: process.stdin,
-        output: process.stdout,
-      });
-
-      readline.question(question, (answer) => {
-        readline.close();
-        resolve(answer);
-      });
-    });
   }
 
   async randomID() {
@@ -315,59 +321,59 @@ class jsonverse {
     return idWithoutHyphens;
   }
 
-  // Export Data
+  // TODO: Export Data
   async exportData(dataName, format = "json") {
     const data = await this.readData(dataName);
 
     if (format === "json") {
-      // Export as JSON
+      // *Export as JSON
       const filePath = this.getFilePath(dataName + ".json");
       await fs.writeFile(filePath, JSON.stringify(data, null, 2), "utf8");
       this.logSuccess(`Data exported to JSON: ${filePath}`);
     } else if (format === "csv") {
-      // Export as CSV
+      // *Export as CSV
       const filePath = this.getFilePath(dataName + ".csv");
       const csvData = data.map((item) => {
         return {
           id: item.id,
-          ...item, // Include other properties in CSV
+          ...item, // *Include other properties in CSV
         };
       });
       const csvString = await this.convertToCSV(csvData);
       await fs.writeFile(filePath, csvString, "utf8");
       this.logSuccess(`Data exported to CSV: ${filePath}`);
     } else if (format === "xlsx") {
-      // Export as XLSX using exceljs
+      // *Export as XLSX using exceljs
       const filePath = this.getFilePath(dataName + ".xlsx");
       await this.writeDataToXLSX(filePath, data);
     }
   }
 
-  // Import Data
+  // TODO: Import Data
   async importData(dataName, format = "json", filePath) {
     if (format === "json") {
-      // Import JSON
+      // * Import JSON
       const rawData = await fs.readFile(filePath, "utf8");
       const newData = JSON.parse(rawData);
       await this.writeDataByFileName(dataName, newData);
       this.logSuccess(`Data imported from JSON: ${filePath}`);
     } else if (format === "csv") {
-      // Import CSV
+      // * Import CSV
       const csvData = await this.readCSV(filePath);
       await this.writeDataByFileName(dataName, csvData);
       this.logSuccess(`Data imported from CSV: ${filePath}`);
     } else if (format === "xlsx") {
-      // Import XLSX data using exceljs
+      // * Import XLSX data using exceljs
       const xlsxData = await this.readXLSX(filePath);
       await this.writeDataByFileName(dataName, xlsxData);
       this.logSuccess(`Data imported from XLSX: ${filePath}`);
     } else {
-      // Handle unsupported file format
+      // * Handle unsupported file format
       this.logError(`Unsupported file format: ${format}`);
     }
   }
 
-  // Data Transformation (if needed)
+  // TODO: Data Transformation (if needed)
   async transformData(dataName, transformFunction) {
     const data = await this.readData(dataName);
     const transformedData = data.map(transformFunction);
@@ -375,14 +381,14 @@ class jsonverse {
     this.logSuccess(`Data transformed and saved.`);
   }
 
-  // Helper method to convert data to CSV
+  // TODO: Helper method to convert data to CSV
   async convertToCSV(data) {
     const { Parser } = require("json2csv");
     const parser = new Parser();
     return parser.parse(data);
   }
 
-  // Helper method to read CSV
+  // TODO: Helper method to read CSV
   async readCSV(filePath) {
     const results = [];
     const stream = fs.createReadStream(filePath).pipe(csv());
@@ -394,12 +400,12 @@ class jsonverse {
     });
   }
 
-  // Function to read data from an XLSX file using exceljs
+  // TODO: Function to read data from an XLSX file using exceljs
   async readXLSX(filePath) {
     try {
       const workbook = new ExcelJS.Workbook();
       await workbook.xlsx.readFile(filePath);
-      const worksheet = workbook.getWorksheet(1); // Assuming there's only one sheet
+      const worksheet = workbook.getWorksheet(1); // * Assuming there's only one sheet
 
       const data = [];
       worksheet.eachRow((row, rowNumber) => {
@@ -416,18 +422,18 @@ class jsonverse {
     }
   }
 
-  // Helper method to write data to an XLSX file using exceljs
+  // TODO: Helper method to write data to an XLSX file using exceljs
   async writeDataToXLSX(filePath, data) {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("Sheet1");
 
-    // Add headers to the worksheet
+    // * Add headers to the worksheet
     if (data.length > 0) {
       const headers = Object.keys(data[0]);
       worksheet.addRow(headers);
     }
 
-    // Add data rows to the worksheet
+    // * Add data rows to the worksheet
     data.forEach((row) => {
       worksheet.addRow(Object.values(row));
     });
@@ -436,24 +442,24 @@ class jsonverse {
     this.logSuccess(`Data exported to XLSX: ${filePath}`);
   }
 
-  // Export Data to XLSX
+  // TODO: Export Data to XLSX
   async exportDataToXLSX(dataName) {
     const data = await this.readData(dataName);
 
-    // Check if the data is empty
+    // * Check if the data is empty
     if (data.length === 0) {
       this.logError(`No data to export in ${dataName}.`);
       return;
     }
 
-    // Create an XLSX object from the JSON data
+    // * Create an XLSX object from the JSON data
     const xls = json2xls(data);
 
-    // Specify the file path where the XLSX file will be saved
+    // * Specify the file path where the XLSX file will be saved
     const filePath = this.getFilePath(dataName + ".xlsx");
 
     try {
-      // Save the XLSX data to the file
+      // * Save the XLSX data to the file
       fs.writeFileSync(filePath, xls, "binary");
       this.logSuccess(`Data exported to XLSX: ${filePath}`);
     } catch (error) {
@@ -461,21 +467,21 @@ class jsonverse {
     }
   }
 
-  // Function to convert XLS data to JSON
+  // TODO: Function to convert XLS data to JSON
   async xlsToJSON(xlsData) {
     const wb = XLSX.read(xlsData, { type: "buffer" });
-    const ws = wb.Sheets[wb.SheetNames[0]]; // Assuming there's only one sheet
+    const ws = wb.Sheets[wb.SheetNames[0]]; // * Assuming there's only one sheet
     return XLSX.utils.sheet_to_json(ws);
   }
 
   isCacheExpired(dataName) {
-    const CACHE_EXPIRATION_TIME = 10 * 60 * 1000; // 10 minutes in milliseconds
+    const CACHE_EXPIRATION_TIME = 10 * 60 * 1000; // * 10 minutes in milliseconds
 
     if (
       this.cache[dataName] &&
       Date.now() - this.cache[dataName].timestamp > CACHE_EXPIRATION_TIME
     ) {
-      // Cache has expired
+      // * Cache has expired
       return true;
     }
 
@@ -489,7 +495,7 @@ class jsonverse {
   async readData(dataName) {
     const filePath = await this.getFilePath(dataName);
 
-    // Check if data is already in the cache and not expired
+    // * Check if data is already in the cache and not expired
     if (this.cache[dataName] && !this.isCacheExpired(dataName)) {
       return this.cache[dataName].data;
     }
@@ -500,7 +506,7 @@ class jsonverse {
         return [];
       }
 
-      // Parse and cache the data with a timestamp
+      // * Parse and cache the data with a timestamp
       const parsedData = JSON.parse(data);
       this.cache[dataName] = {
         data: parsedData,
@@ -513,7 +519,7 @@ class jsonverse {
         await this.initFile(filePath).catch((initError) => {
           this.logError(`Initializing file: ${initError}`);
         });
-        // Retry reading the file
+        // * Retry reading the file
         try {
           const newData = await fs.readFile(filePath, "utf8");
           if (newData.trim() === "") {
@@ -550,7 +556,7 @@ class jsonverse {
     } catch (error) {
       this.logError(`Writing to file ${filePath}: ${error}`);
     }
-    // Invalidate the cache for this data name
+    // * Invalidate the cache for this data name
     delete this.cache[dataName];
   }
 
@@ -564,20 +570,20 @@ class jsonverse {
   }
 
   async editByID(id, updatedData) {
-    // Read existing data from the file
+    // * Read existing data from the file
     const existingData = await this.findByID(id);
 
     if (existingData) {
-      // Find the index of the item with the specified ID
+      // * Find the index of the item with the specified ID
       const itemIndex = existingData.findIndex((item) => item.id === id);
 
       if (itemIndex !== -1) {
-        // Update the existing data with the new data
+        // * Update the existing data with the new data
         existingData[itemIndex] = {
           ...existingData[itemIndex],
           ...updatedData,
         };
-        // Write the updated data back to the file
+        // * Write the updated data back to the file
         await this.writeDataById(id, existingData);
         this.logSuccess(`Item with ID ${id} has been edited.`);
       } else {
@@ -586,7 +592,7 @@ class jsonverse {
     }
   }
 
-  // Add Data
+  // TODO: Add Data
   async saveData(dataName, newData) {
     try {
       const existingData = (await this.readData(dataName)) || [];
@@ -596,13 +602,13 @@ class jsonverse {
         ...newData,
       };
 
-      // Remove any existing data with the same ID
+      // * Remove any existing data with the same ID
       const updatedData = existingData.filter((item) => item.id !== newId);
 
-      // Add the new data with the same ID
+      // * Add the new data with the same ID
       updatedData.push(newDataWithId);
 
-      // Write the updated data to the file
+      // * Write the updated data to the file
       await this.writeDataByFileName(dataName, updatedData);
 
       this.logSuccess(`Data updated in DB: ${dataName}`);
@@ -625,18 +631,13 @@ class jsonverse {
         await this.writeDataByFileName(dataName, newData);
 
         this.logSuccess(`Item has been deleted.`);
-        this.logToConsoleAndFile(
-          `${colors.bright}${colors.fg.blue}[Info]:${colors.reset} Deleted item:`,
-          dataItemToDelete
-        );
+        this.logInfo(`Deleted item:`, dataItemToDelete);
 
         if (typeof window == "undefined") {
           this.logSuccess(`Item Deleted successfully!`);
         }
       } else {
-        this.logToConsoleAndFile(
-          `${colors.bright}${colors.fg.blue}[Info]:${colors.reset} Item is already deleted.`
-        );
+        this.logInfo(`Item is already deleted.`);
       }
     } catch (error) {
       this.logError(`Deleting data:`, error);
@@ -645,32 +646,28 @@ class jsonverse {
 
   async delByDataName(dataName, id) {
     try {
-      // Read the data from the specified JSON file
+      // * Read the data from the specified JSON file
       const data = await this.readData(dataName);
 
       if (data) {
-        // Find the item with the specified ID
+        // * Find the item with the specified ID
         const itemToDelete = data.find((item) => item.id === id);
 
         if (itemToDelete) {
-          // Filter out the item with the matching ID
+          // * Filter out the item with the matching ID
           const newData = data.filter((item) => item.id !== id);
 
-          // Write the updated data back to the JSON file
+          // * Write the updated data back to the JSON file
           await this.writeDataByFileName(dataName, newData);
 
           this.logSuccess(
             `Item with ID ${id} has been deleted from ${dataName}.json`
           );
         } else {
-          this.logToConsoleAndFile(
-            `${colors.bright}${colors.fg.blue}[Info]:${colors.reset} Item with ID ${id} not found in ${dataName}.json.`
-          );
+          this.logInfo(`Item with ID ${id} not found in ${dataName}.json.`);
         }
       } else {
-        this.logToConsoleAndFile(
-          `${colors.bright}${colors.fg.blue}[Info]:${colors.reset} No data found in ${dataName}.json.`
-        );
+        this.logInfo(`No data found in ${dataName}.json.`);
       }
     } catch (error) {
       this.logError(`Deleting data:`, error);
@@ -694,6 +691,43 @@ class jsonverse {
 
     return allData;
   }
+
+  // TODO: model
+  model(dataName, schema) {
+    const filePath = this.getFilePath(dataName);
+
+    return {
+      save: async function (newData) {
+        const validationErrors = schema.validate(newData);
+        if (validationErrors) {
+          return Promise.reject(validationErrors);
+        }
+
+        return this.saveData(dataName, newData);
+      }.bind(this), // Bind the function to the current context
+
+      delete: async function (id) {
+        return this.delByDataName(dataName, id);
+      }.bind(this),
+
+      update: async function (id, updatedData) {
+        return this.editByID(id, updatedData);
+      }.bind(this),
+
+      find: async function (id) {
+        return this.findByID(id);
+      }.bind(this),
+
+      findAll: async function () {
+        return this.readData(dataName);
+      }.bind(this),
+
+      // Implement other methods as needed
+    };
+  }
 }
 
-module.exports = jsonverse;
+module.exports = {
+  Schema,
+  jsonverse,
+};
