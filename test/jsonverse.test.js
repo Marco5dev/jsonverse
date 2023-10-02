@@ -3,18 +3,21 @@ const { Schema, jsonverse } = require("../index");
 const path = require("path");
 const fs = require("fs");
 
-describe("Testing Schema", () => {
+describe("Testing JsonVerse Operation scripts", () => {
   let Users;
   let db;
 
+  // TODO: Disable the log in the console
+  // ? do you want to enable console.log again? you can restore the original function:
+  // * console.log = originalConsoleLog;
   const originalConsoleLog = console.log;
   console.log = function () {};
 
   before(async () => {
     db = new jsonverse({
-      dataFolderPath: "./test/data", // data directory
-      logFolderPath: "./test/logs", // logs directory
-      activateLogs: true, // to enable the logs set this value to true
+      dataFolderPath: "./test/data", // * data directory
+      logFolderPath: "./test/logs", // * logs directory
+      activateLogs: true, // * to enable the logs set this value to true
     });
 
     const userSchema = new Schema({
@@ -26,15 +29,15 @@ describe("Testing Schema", () => {
     Users = db.model("Users", userSchema);
   });
 
-  it("should add Data", async () => {
-    // Test the saveData function with data containing only a name
+  it("Add data using saveData()", async () => {
+    // * Test the saveData function with data containing only a name
     const newName = "New Test Item";
     const newData = {
       id: "1234",
       name: newName,
     };
 
-    // Wait for the data to be saved (assuming saveData is an async function)
+    // * Wait for the data to be saved (assuming saveData is an async function)
     await db.saveData("testData", newData);
 
     db.readData("testData").then((result) => {
@@ -44,15 +47,15 @@ describe("Testing Schema", () => {
     });
   });
 
-  it("should delete all items in the data file", async () => {
+  it("Delete Data using delByDataName()", async () => {
     await db.delByDataName("testData", "1234");
 
-    // Verify that all items were deleted
+    // ! Verify that all items were deleted
     const afterDelete = db.readData("testData");
-    expect(afterDelete === "[]"); // Expect an empty array
+    expect(afterDelete === "[]"); // ? Expect an empty array
   });
 
-  it("should save user data", async () => {
+  it("Save Data using Schema.save()", async () => {
     Users.save({
       id: "johndoe",
       name: "John Doe",
@@ -64,7 +67,7 @@ describe("Testing Schema", () => {
     });
   });
 
-  it("should update user data", async () => {
+  it("Update Data using Schema.update()", async () => {
     Users.save({
       id: "markmaher",
       name: "Mark Maher",
@@ -80,7 +83,7 @@ describe("Testing Schema", () => {
     });
   });
 
-  it("should delete user data", async () => {
+  it("Delete Data using Schema.delete()", async () => {
     Users.save({
       id: "yousifsamir",
       name: "Yousif Samir",
@@ -94,7 +97,7 @@ describe("Testing Schema", () => {
     });
   });
 
-  it("should find user data by ID", async () => {
+  it("Search data using Schema.find(id)", async () => {
     Users.save({
       id: "alicejohnson",
       name: "Alice Johnson",
@@ -108,7 +111,7 @@ describe("Testing Schema", () => {
     });
   });
 
-  it("should find all Users", async () => {
+  it("Read Data from database using Schema.findAll()", async () => {
     const users = [
       {
         id: () => "userOne1",
@@ -124,9 +127,9 @@ describe("Testing Schema", () => {
 
     for (const user of users) {
       await Users.save({
-        id: user.id(), // Note: invoking the function here
-        name: user.name(), // Note: invoking the function here
-        email: user.email(), // Note: invoking the function here
+        id: user.id(), // *Note: invoking the function here
+        name: user.name(), // *Note: invoking the function here
+        email: user.email(), // *Note: invoking the function here
       });
     }
 
@@ -138,33 +141,33 @@ describe("Testing Schema", () => {
   });
 
   after(async () => {
-    // Delete test data and logs folders after all tests have run
+    // * Delete test data and logs folders after all tests have run
     const testDataPath = path.join(__dirname, "data");
     const testLogsPath = path.join(__dirname, "logs");
 
     try {
-      // Function to delete a folder recursively
+      // ! Function to delete a folder recursively
       function deleteFolderRecursive(folderPath) {
         if (fs.existsSync(folderPath)) {
           fs.readdirSync(folderPath).forEach((file) => {
             const curPath = path.join(folderPath, file);
             if (fs.lstatSync(curPath).isDirectory()) {
-              // Recurse into subfolder
+              // * Recurse into subfolder
               deleteFolderRecursive(curPath);
             } else {
-              // Delete file
+              // * Delete file
               fs.unlinkSync(curPath);
             }
           });
-          // Delete the empty folder
+          // * Delete the empty folder
           fs.rmdirSync(folderPath);
         }
       }
 
-      // Remove the test data folder and its contents
+      // * Remove the test data folder and its contents
       deleteFolderRecursive(testDataPath);
 
-      // Remove the test logs folder and its contents
+      // * Remove the test logs folder and its contents
       deleteFolderRecursive(testLogsPath);
     } catch (error) {
       console.error("Error deleting test folders:", error);
