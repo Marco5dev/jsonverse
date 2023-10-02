@@ -9,6 +9,7 @@ jsonVerse is a lightweight JSON-based database package for Node.js. It provides 
 [![LICENSE](https://img.shields.io/npm/l/jsonverse.svg)](https://github.com/Marco5dev/jsonverse/blob/master/LICENSE)
 [![Contributors](https://img.shields.io/github/contributors/Marco5dev/jsonverse.svg)](https://github.com/Marco5dev/jsonverse/graphs/contributors)
 [![Commit](https://img.shields.io/github/last-commit/Marco5dev/jsonverse.svg)](https://github.com/Marco5dev/jsonverse/commits/master)
+[![Periodic testing of the JsonVerse](https://github.com/Marco5dev/jsonverse/actions/workflows/code-test.yml/badge.svg)](https://github.com/Marco5dev/jsonverse/actions/workflows/code-test.yml)
 
 ## Introduction
 
