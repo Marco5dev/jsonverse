@@ -721,8 +721,6 @@ class jsonverse {
       findAll: async function () {
         return this.readData(dataName);
       }.bind(this),
-
-      // Implement other methods as needed
     };
   }
 }
