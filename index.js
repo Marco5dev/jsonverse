@@ -39,6 +39,8 @@ class jsonverse {
       dataFolderPath: "./Data",
       logFolderPath: "./Logs",
       activateLogs: true,
+      encrypted: false,
+      secretKey: "",
     };
 
     // * Merge the default options with the provided options
@@ -49,6 +51,8 @@ class jsonverse {
     this.backupFolderPath = path.join(this.dataFolderPath, "Backup");
     this.logFilePath = path.join(this.logFolderPath, "data.log");
     this.enableLogToConsoleAndFile = this.options.activateLogs;
+    this.enableEncryption = this.options.encrypted;
+    this.enableEncryptionKey = this.options.secretKey;
     this.searchIndex = {};
     this.cache = {};
     this.data = {};
@@ -517,7 +521,7 @@ class jsonverse {
     } catch (error) {
       if (error.code === "ENOENT") {
         await this.initFile(filePath).catch((initError) => {
-          this.logError(`Initializing file: ${initError}`);
+          this.logInfo(`Initializing file: ${initError}`);
         });
         // * Retry reading the file
         try {
@@ -608,8 +612,14 @@ class jsonverse {
       // * Add the new data with the same ID
       updatedData.push(newDataWithId);
 
-      // * Write the updated data to the file
-      await this.writeDataByFileName(dataName, updatedData);
+      if (this.enableEncryption === true) {
+        // * Write the updated data to the file
+        let encrypted = this.encrypt(dataName, this.enableEncryptionKey)
+        await this.writeDataByFileName(encrypted, updatedData);
+      } else {
+        // * Write the updated data to the file
+        await this.writeDataByFileName(dataName, updatedData);
+      }
 
       this.logSuccess(`Data updated in DB: ${dataName}`);
     } catch (error) {
