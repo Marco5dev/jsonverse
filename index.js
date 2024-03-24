@@ -41,6 +41,7 @@ class jsonverse {
       activateLogs: true,
     };
 
+    throw new Error('Package is deprecated please install the latest version of the new database called "verse.db"')
     // * Merge the default options with the provided options
     this.options = { ...defaultOptions, ...options };
 
